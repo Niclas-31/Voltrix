@@ -4,6 +4,14 @@
 # Gradle cache folder
 .gradle
 
+neoforge/build
+neoforge/run
+fabric/.gradle
+fabric/build
+fabric/runs
+common/build
+buildSrc
+
 # Gradle build folder
 build
 
