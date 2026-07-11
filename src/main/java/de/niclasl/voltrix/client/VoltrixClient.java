@@ -1,6 +1,8 @@
 package de.niclasl.voltrix.client;
 
 import de.niclasl.voltrix.Voltrix;
+import de.niclasl.voltrix.client.screen.FuelGeneratorScreen;
+import de.niclasl.voltrix.common.registries.menus.ModMenuTypes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -24,5 +26,6 @@ public class VoltrixClient {
 
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(ModMenuTypes.FUEL_GENERATOR.get(), FuelGeneratorScreen::new);
     }
 }

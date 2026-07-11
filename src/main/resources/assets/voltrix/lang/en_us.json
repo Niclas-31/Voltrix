@@ -1,5 +1,12 @@
 {
-  "itemGroup.voltrix": "Example Mod Tab",
-  "block.voltrix.example_block": "Example Block",
-  "item.voltrix.example_item": "Example Item"
+  "itemGroup.voltrix": "Voltrix",
+  "itemGroup.voltrix_building_blocks": "Voltrix Building Blocks",
+
+  "block.voltrix.copper_cable": "Copper Cable",
+  "block.voltrix.fuel_generator": "Fuel Generator",
+
+  "item.voltrix.wrench": "Wrench",
+
+  "item.voltrix.wrench.selected": "Selected: %s",
+  "item.voltrix.wrench.update": "%s: %s"
 }

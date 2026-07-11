@@ -1,0 +1,12 @@
+{
+  "itemGroup.voltrix": "Voltrix",
+  "itemGroup.voltrix_building_blocks": "Voltrix Baublöcke",
+
+  "block.voltrix.copper_cable": "Kupfer Kabel",
+  "block.voltrix.fuel_generator": "Kraftstoffgenerator",
+
+  "item.voltrix.wrench": "Schraubenschlüssel",
+
+  "item.voltrix.wrench.selected": "Ausgewählt: %s",
+  "item.voltrix.wrench.update": "%s: %s"
+}
