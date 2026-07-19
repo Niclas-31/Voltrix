@@ -21,6 +21,10 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("fuel_generator", () -> new BlockEntityType<>(
                     FuelGeneratorEntity::new, ModBlocks.FUEL_GENERATOR.get()));
 
+    public static final Supplier<BlockEntityType<ElectricFurnaceEntity>> ELECTRIC_FURNACE =
+            BLOCK_ENTITIES.register("electric_furnace", () -> new BlockEntityType<>(
+                    ElectricFurnaceEntity::new, ModBlocks.ELECTRIC_FURNACE.get()));
+
     public static void register(IEventBus bus) {
         BLOCK_ENTITIES.register(bus);
     }

@@ -15,7 +15,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModCreativeModeTab {
     public static final ResourceKey<CreativeModeTab> VOLTRIX = createKey("voltrix");
-    public static final ResourceKey<CreativeModeTab> VOLTRIX_BUILDING = createKey("voltrix_building_blocks");
 
     private static ResourceKey<CreativeModeTab> createKey(String name) {
         return ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath(Voltrix.MOD_ID, name));
@@ -34,6 +33,7 @@ public class ModCreativeModeTab {
                                 output.accept(ModItems.WRENCH);
                                 output.accept(ModBlocks.COPPER_CABLE);
                                 output.accept(ModBlocks.FUEL_GENERATOR);
+                                output.accept(ModBlocks.ELECTRIC_FURNACE);
                             })
                             .build()
             );

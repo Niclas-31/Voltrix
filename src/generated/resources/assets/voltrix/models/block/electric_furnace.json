@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "voltrix:block/electric_furnace_front",
+    "side": "voltrix:block/electric_furnace_side",
+    "top": "voltrix:block/electric_furnace_top"
+  }
+}

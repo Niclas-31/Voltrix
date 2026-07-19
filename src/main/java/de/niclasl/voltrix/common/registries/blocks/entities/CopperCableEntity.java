@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class CopperCableEntity extends AbstractCableEntity {
 
     private static final ElectricalProperties PROPERTIES =
-            ElectricalProperties.cable(128, 4, 0.01);
+            ElectricalProperties.cable(128, 4, 0.01, 1024);
 
     public CopperCableEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.COPPER_CABLE.get(), pos, blockState, 300);
@@ -31,8 +31,8 @@ public class CopperCableEntity extends AbstractCableEntity {
                 .setValue(CopperCable.UP, cable.getVisual(level, pos, Direction.UP))
                 .setValue(CopperCable.DOWN, cable.getVisual(level, pos, Direction.DOWN));
 
-        for (Direction dir : Direction.values()) {
-            level.updateNeighbourForOutputSignal(pos.relative(dir), newState.getBlock());
+        if (state.equals(newState)) {
+            return;
         }
 
         level.setBlock(pos, newState, Block.UPDATE_ALL);
@@ -50,22 +50,16 @@ public class CopperCableEntity extends AbstractCableEntity {
         super.onLoad();
 
         if (level != null && !level.isClientSide() && level instanceof ServerLevel serverLevel) {
-
-            EnergyNetworkManager
-                    .getNetwork(serverLevel)
-                    .addNode(worldPosition);
+            EnergyNetworkManager.getNetwork(serverLevel).addNode(worldPosition);
         }
     }
 
     @Override
     public void setRemoved() {
-        if (level instanceof ServerLevel serverLevel) {
-
-            EnergyNetworkManager
-                    .getNetwork(serverLevel)
-                    .removeNode(worldPosition);
-        }
-
         super.setRemoved();
+
+        if (level instanceof ServerLevel serverLevel) {
+            EnergyNetworkManager.getNetwork(serverLevel).removeNode(worldPosition);
+        }
     }
 }

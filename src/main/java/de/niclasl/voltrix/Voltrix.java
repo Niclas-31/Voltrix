@@ -1,6 +1,6 @@
 package de.niclasl.voltrix;
 
-import de.niclasl.voltrix.common.core.impl.EnergyStorageImpl;
+import de.niclasl.voltrix.common.core.network.EnergyStorageImpl;
 import de.niclasl.voltrix.common.network.ModMessage;
 import de.niclasl.voltrix.common.registries.ModRegistries;
 import de.niclasl.voltrix_api.VoltrixAPI;

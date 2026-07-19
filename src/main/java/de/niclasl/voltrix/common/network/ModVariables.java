@@ -104,14 +104,10 @@ public class ModVariables {
         }, instance -> instance.save(new CompoundTag())));
         boolean syncDirty = false;
 
-        public boolean isSystemLive;
-
         public void read(CompoundTag nbt) {
-            isSystemLive = nbt.getBooleanOr("isSystemLive", true);
         }
 
         public CompoundTag save(CompoundTag nbt) {
-            nbt.putBoolean("isSystemLive", isSystemLive);
             return nbt;
         }
 

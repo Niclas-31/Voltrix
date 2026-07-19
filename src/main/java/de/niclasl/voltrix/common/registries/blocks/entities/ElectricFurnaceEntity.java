@@ -1,0 +1,240 @@
+package de.niclasl.voltrix.common.registries.blocks.entities;
+
+import com.mojang.serialization.Codec;
+import de.niclasl.voltrix.common.core.EnergyNetworkManager;
+import de.niclasl.voltrix.common.registries.menus.ElectricFurnaceMenu;
+import de.niclasl.voltrix_api.energy.ElectricalProperties;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedItemContents;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
+import java.util.Map;
+
+public class ElectricFurnaceEntity extends AbstractMachineEntity implements Container, MenuProvider {
+    private static final ElectricalProperties PROPERTIES =
+            ElectricalProperties.consumer(120, 20);
+
+    private NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
+
+    private static final Codec<Map<ResourceKey<Recipe<?>>, Integer>> RECIPES_USED_CODEC = Codec.unboundedMap(Recipe.KEY_CODEC, Codec.INT);
+    int litTimeRemaining;
+    int litTotalTime;
+    int cookingTimer;
+    int cookingTotalTime;
+
+    private final Reference2IntOpenHashMap<ResourceKey<Recipe<?>>> recipesUsed = new Reference2IntOpenHashMap<>();
+    private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> quickCheck;
+
+    public ElectricFurnaceEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.ELECTRIC_FURNACE.get(), pos, state, 100000);
+
+        this.quickCheck = RecipeManager.createCheck(RecipeType.SMELTING);
+    }
+
+    @Override
+    protected void loadAdditional(@NonNull ValueInput input) {
+        super.loadAdditional(input);
+        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(input, this.items);
+        this.cookingTimer = input.getIntOr("cooking_time_spent", (short)0);
+        this.cookingTotalTime = input.getIntOr("cooking_total_time", (short)0);
+        this.litTimeRemaining = input.getIntOr("lit_time_remaining", (short)0);
+        this.litTotalTime = input.getIntOr("lit_total_time", (short)0);
+        this.recipesUsed.clear();
+        this.recipesUsed.putAll(input.read("RecipesUsed", RECIPES_USED_CODEC).orElse(Map.of()));
+    }
+
+    @Override
+    protected void saveAdditional(@NonNull ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("cooking_time_spent", this.cookingTimer);
+        output.putInt("cooking_total_time", this.cookingTotalTime);
+        output.putInt("lit_time_remaining", this.litTimeRemaining);
+        output.putInt("lit_total_time", this.litTotalTime);
+        ContainerHelper.saveAllItems(output, this.items);
+        output.store("RecipesUsed", RECIPES_USED_CODEC, this.recipesUsed);
+    }
+
+    @Override
+    public ElectricalProperties getElectricalProperties() {
+        return PROPERTIES;
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+
+        if (level != null && !level.isClientSide() && level instanceof ServerLevel serverLevel) {
+            EnergyNetworkManager.getNetwork(serverLevel).addNode(worldPosition);
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+
+        if (level instanceof ServerLevel serverLevel) {
+            EnergyNetworkManager.getNetwork(serverLevel).removeNode(worldPosition);
+        }
+    }
+
+    @Override
+    public int getContainerSize() {
+        return items.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        for (ItemStack stack : items) {
+            if (!stack.isEmpty()) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public @NonNull ItemStack getItem(int index) {
+        return items.get(index);
+    }
+
+    @Override
+    public @NonNull ItemStack removeItem(int index, int count) {
+        ItemStack stack = ContainerHelper.removeItem(items, index, count);
+        if (!stack.isEmpty()) setChanged();
+        return stack;
+    }
+
+    @Override
+    public @NonNull ItemStack removeItemNoUpdate(int index) {
+        ItemStack stack = items.get(index);
+        items.set(index, ItemStack.EMPTY);
+        return stack;
+    }
+
+    @Override
+    public void setItem(int index, @NonNull ItemStack stack) {
+        items.set(index, stack);
+        setChanged();
+    }
+
+    @Override
+    public void clearContent() {
+        items = NonNullList.withSize(1, ItemStack.EMPTY);
+        setChanged();
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return player.distanceToSqr(
+                worldPosition.getX() + 0.5,
+                worldPosition.getY() + 0.5,
+                worldPosition.getZ() + 0.5
+        ) <= 64.0;
+    }
+
+    @Override
+    public @NonNull Component getDisplayName() {
+        return Component.translatable("block.voltrix.electric_furnace");
+    }
+
+    @Override
+    public @Nullable AbstractContainerMenu createMenu(int id, @NonNull Inventory inventory, @NonNull Player player) {
+        return new ElectricFurnaceMenu(id, inventory, this, this.data);
+    }
+
+    @Override
+    public void setRecipeUsed(@Nullable RecipeHolder<?> recipeHolder) {
+        if (recipeHolder != null) {
+            ResourceKey<Recipe<?>> resourcekey = recipeHolder.id();
+            this.recipesUsed.addTo(resourcekey, 1);
+        }
+    }
+
+    @Override
+    public @Nullable RecipeHolder<?> getRecipeUsed() {
+        return null;
+    }
+
+    @Override
+    public void fillStackedContents(@NonNull StackedItemContents contents) {
+        for (ItemStack itemstack : this.items) {
+            contents.accountStack(itemstack);
+        }
+    }
+
+    @Override
+    protected boolean canProcess(ServerLevel level, RecipeHolder<? extends AbstractCookingRecipe> recipe) {
+        if (recipe == null) {
+            return false;
+        }
+
+        ItemStack result =
+                recipe.value().assemble(
+                        new SingleRecipeInput(getItem(0)),
+                        level.registryAccess()
+                );
+
+        ItemStack output = getItem(1);
+
+        if (output.isEmpty()) {
+            return true;
+        }
+
+        if (!ItemStack.isSameItemSameComponents(output, result)) {
+            return false;
+        }
+
+        return output.getCount() + result.getCount()
+                <= output.getMaxStackSize();
+    }
+
+    @Override
+    protected void finishRecipe(ServerLevel level, RecipeHolder<? extends AbstractCookingRecipe> recipe) {
+        ItemStack result =
+                recipe.value().assemble(
+                        new SingleRecipeInput(getItem(0)),
+                        level.registryAccess()
+                );
+
+        getItem(0).shrink(1);
+
+        ItemStack output = getItem(1);
+
+        if (output.isEmpty()) {
+            setItem(1, result.copy());
+        } else {
+            output.grow(result.getCount());
+        }
+
+        setChanged();
+    }
+
+    @Override
+    protected long getEnergyPerTick() {
+        return 32;
+    }
+
+    @Override
+    protected @Nullable RecipeHolder<? extends AbstractCookingRecipe> getRecipe(ServerLevel level) {
+        return quickCheck.getRecipeFor(
+                new SingleRecipeInput(getItem(0)),
+                level
+        ).orElse(null);
+    }
+}

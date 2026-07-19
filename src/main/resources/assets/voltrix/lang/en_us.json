@@ -4,9 +4,15 @@
 
   "block.voltrix.copper_cable": "Copper Cable",
   "block.voltrix.fuel_generator": "Fuel Generator",
+  "block.voltrix.electric_furnace": "Electric Furnace",
 
   "item.voltrix.wrench": "Wrench",
 
   "item.voltrix.wrench.selected": "Selected: %s",
-  "item.voltrix.wrench.update": "%s: %s"
+  "item.voltrix.wrench.update": "%s: %s",
+
+  "message.voltrix.cable.insulated": "The cable is now insulated.",
+
+  "death.attack.electricity": "%1$s was killed by electric shock",
+  "death.attack.electricity.player": "%1$s was electrocuted by %2$s"
 }

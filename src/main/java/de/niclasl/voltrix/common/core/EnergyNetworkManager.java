@@ -1,6 +1,6 @@
 package de.niclasl.voltrix.common.core;
 
-import de.niclasl.voltrix.common.core.impl.EnergyNetworkImpl;
+import de.niclasl.voltrix.common.core.network.EnergyNetworkImpl;
 import net.minecraft.server.level.ServerLevel;
 
 import java.util.HashMap;

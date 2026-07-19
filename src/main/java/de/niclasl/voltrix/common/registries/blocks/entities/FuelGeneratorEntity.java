@@ -1,10 +1,12 @@
 package de.niclasl.voltrix.common.registries.blocks.entities;
 
+import de.niclasl.voltrix.common.core.EnergyNetworkManager;
 import de.niclasl.voltrix.common.registries.menus.FuelGeneratorMenu;
 import de.niclasl.voltrix_api.energy.ElectricalProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
@@ -21,8 +23,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public class FuelGeneratorEntity extends AbstractProducerEntity implements Container, MenuProvider {
-    private static final ElectricalProperties PROPERTIES = ElectricalProperties.generator(128, 4);
-    public NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+    private static final ElectricalProperties PROPERTIES = ElectricalProperties.generator(120, 4);
+    private NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
 
     private final ContainerData data = new ContainerData() {
 
@@ -81,6 +83,24 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
         return PROPERTIES;
     }
 
+    @Override
+    public void onLoad() {
+        super.onLoad();
+
+        if (level != null && !level.isClientSide() && level instanceof ServerLevel serverLevel) {
+            EnergyNetworkManager.getNetwork(serverLevel).addNode(worldPosition);
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+
+        if (level instanceof ServerLevel serverLevel) {
+            EnergyNetworkManager.getNetwork(serverLevel).removeNode(worldPosition);
+        }
+    }
+
     public static void tick(Level level, FuelGeneratorEntity entity) {
         if (level.isClientSide()) {
             return;
@@ -124,10 +144,6 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
         }
 
         setChanged();
-    }
-
-    public ContainerData getContainerData() {
-        return this.data;
     }
 
     @Override
@@ -207,6 +223,6 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int id, @NonNull Inventory inventory, @NonNull Player player) {
-        return new FuelGeneratorMenu(id, inventory, this);
+        return new FuelGeneratorMenu(id, inventory, this, data);
     }
 }

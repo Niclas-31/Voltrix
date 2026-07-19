@@ -6,6 +6,7 @@ import de.niclasl.voltrix.common.registries.items.ModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
@@ -22,6 +23,7 @@ public class ModModelProvider extends ModelProvider {
 
     @Override
     protected void registerModels(@NonNull BlockModelGenerators blockModels, @NonNull ItemModelGenerators itemModels) {
+        blockModels.createFurnace(ModBlocks.ELECTRIC_FURNACE.get(), TexturedModel.ORIENTABLE_ONLY_TOP);
     }
 
     @Override

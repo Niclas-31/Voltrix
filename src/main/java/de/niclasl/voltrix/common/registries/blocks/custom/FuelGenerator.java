@@ -3,11 +3,13 @@ package de.niclasl.voltrix.common.registries.blocks.custom;
 import com.mojang.serialization.MapCodec;
 import de.niclasl.voltrix.common.registries.blocks.entities.FuelGeneratorEntity;
 import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
+import de.niclasl.voltrix.common.registries.items.custom.WrenchItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -34,13 +36,16 @@ public class FuelGenerator extends BaseEntityBlock {
     protected @NonNull InteractionResult useWithoutItem(@NonNull BlockState state, @NonNull Level level,
                                                         @NonNull BlockPos pos, @NonNull Player player,
                                                         @NonNull BlockHitResult hitResult) {
-        if (!level.isClientSide()) {
-            BlockEntity entity = level.getBlockEntity(pos);
-            if (entity instanceof FuelGeneratorEntity generator) {
-                player.openMenu(new SimpleMenuProvider(generator, Component.translatable("block.voltrix.fuel_generator")), pos);
-            } else {
-                throw new IllegalStateException("Missing container provider!");
-            }
+        ItemStack stack = player.getMainHandItem();
+
+        if (stack.getItem() instanceof WrenchItem) return InteractionResult.PASS;
+        if (level.isClientSide()) return InteractionResult.PASS;
+
+        BlockEntity entity = level.getBlockEntity(pos);
+        if (entity instanceof FuelGeneratorEntity generator) {
+            player.openMenu(new SimpleMenuProvider(generator, Component.translatable("block.voltrix.fuel_generator")), pos);
+        } else {
+            throw new IllegalStateException("Missing container provider!");
         }
         return InteractionResult.SUCCESS;
     }

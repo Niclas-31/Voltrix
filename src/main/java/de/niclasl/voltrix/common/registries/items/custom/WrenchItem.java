@@ -3,7 +3,8 @@ package de.niclasl.voltrix.common.registries.items.custom;
 import de.niclasl.voltrix.common.registries.blocks.entities.AbstractCableEntity;
 import de.niclasl.voltrix.common.registries.components.ModDataComponents;
 import de.niclasl.voltrix.common.registries.components.WrenchState;
-import de.niclasl.voltrix_api.energy.cable.ConnectionMode;
+import de.niclasl.voltrix_api.energy.ConnectionMode;
+import de.niclasl.voltrix_api.energy.IEnergyConnectable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -28,11 +29,8 @@ public class WrenchItem extends Item {
     }
 
     @Override
-    public boolean canDestroyBlock(@NonNull ItemStack stack, @NonNull BlockState state, Level level, @NonNull BlockPos pos, @NonNull LivingEntity entity) {
-        if (!level.isClientSide() && entity instanceof Player player) {
-            selectDirection(player, stack, state);
-        }
-
+    public boolean canDestroyBlock(@NonNull ItemStack stack, @NonNull BlockState state, @NonNull Level level, @NonNull BlockPos pos,
+                                   @NonNull LivingEntity entity) {
         return false;
     }
 
@@ -41,44 +39,54 @@ public class WrenchItem extends Item {
         Level level = context.getLevel();
 
         if (level.isClientSide()) {
-            return InteractionResult.SUCCESS;
-        }
-
-        BlockPos pos = context.getClickedPos();
-
-        BlockEntity be = level.getBlockEntity(pos);
-
-        if (!(be instanceof AbstractCableEntity cable)) {
             return InteractionResult.PASS;
         }
 
+        Player player = context.getPlayer();
         ItemStack stack = context.getItemInHand();
+        BlockPos pos = context.getClickedPos();
+        BlockState state = level.getBlockState(pos);
 
-        WrenchState wrenchState =
-                stack.getOrDefault(
-                        ModDataComponents.WRENCH_STATE.get(),
-                        WrenchState.EMPTY
-                );
+        if (player == null) {
+            return InteractionResult.PASS;
+        }
 
-        Holder<Block> holder = level.getBlockState(pos).getBlockHolder();
+        if (player.isShiftKeyDown()) {
+            selectDirection(player, stack, state);
+        } else {
+            BlockEntity be = level.getBlockEntity(pos);
 
-        Direction direction = wrenchState.selectedConnection(holder);
+            if (!(be instanceof IEnergyConnectable connectable)) {
+                return InteractionResult.PASS;
+            }
 
-        cable.cycleConnectionMode(direction);
+            WrenchState wrenchState =
+                    stack.getOrDefault(
+                            ModDataComponents.WRENCH_STATE.get(),
+                            WrenchState.EMPTY
+                    );
 
-        cable.updateConnections(level, pos, cable.getBlockState());
+            Holder<Block> holder = level.getBlockState(pos).getBlockHolder();
 
-        ConnectionMode mode = cable.getConnectionMode(direction);
+            Direction direction = wrenchState.selectedConnection(holder);
 
-        assert context.getPlayer() != null;
-        ((ServerPlayer) context.getPlayer()).sendSystemMessage(
-                Component.translatable(
-                        "item.voltrix.wrench.update",
-                        direction.getName(),
-                        mode.getSerializedName()
-                ),
-                true
-        );
+            connectable.cycleConnectionMode(direction);
+
+            if (be instanceof AbstractCableEntity cable) {
+                cable.updateConnections(level, pos, cable.getBlockState());
+            }
+
+            ConnectionMode mode = connectable.getConnectionMode(direction);
+
+            ((ServerPlayer) player).sendSystemMessage(
+                    Component.translatable(
+                            "item.voltrix.wrench.update",
+                            direction.getName(),
+                            mode.getSerializedName()
+                    ),
+                    true
+            );
+        }
 
         return InteractionResult.SUCCESS;
     }

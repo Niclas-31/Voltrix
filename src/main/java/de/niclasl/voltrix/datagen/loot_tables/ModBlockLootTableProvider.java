@@ -19,6 +19,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     protected void generate() {
         dropSelf(ModBlocks.COPPER_CABLE.get());
         dropSelf(ModBlocks.FUEL_GENERATOR.get());
+        dropSelf(ModBlocks.ELECTRIC_FURNACE.get());
     }
 
     @Override

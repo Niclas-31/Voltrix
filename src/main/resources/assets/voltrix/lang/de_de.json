@@ -4,9 +4,15 @@
 
   "block.voltrix.copper_cable": "Kupfer Kabel",
   "block.voltrix.fuel_generator": "Kraftstoffgenerator",
+  "block.voltrix.electric_furnace": "Elektrischer Ofen",
 
   "item.voltrix.wrench": "Schraubenschlüssel",
 
   "item.voltrix.wrench.selected": "Ausgewählt: %s",
-  "item.voltrix.wrench.update": "%s: %s"
+  "item.voltrix.wrench.update": "%s: %s",
+
+  "message.voltrix.cable.insulated": "Kabel ist nun Isoliert.",
+
+  "death.attack.electricity": "%1$s wurde durch Strom getötet",
+  "death.attack.electricity.player": "%1$s wurde von %2$s elektrisch getötet"
 }

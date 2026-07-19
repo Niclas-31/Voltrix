@@ -16,6 +16,9 @@ public class ModMenuTypes {
     public static final DeferredHolder<MenuType<?>, MenuType<FuelGeneratorMenu>> FUEL_GENERATOR =
             registerMenuType("fuel_generator", FuelGeneratorMenu::new);
 
+    public static final DeferredHolder<MenuType<?>, MenuType<ElectricFurnaceMenu>> ELECTRIC_FURNACE =
+            registerMenuType("electric_furnace", ElectricFurnaceMenu::new);
+
     private static <T extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<T>> registerMenuType(String name,
                                                                                                                IContainerFactory<T> factory) {
         return MENUS.register(name, () -> IMenuTypeExtension.create(factory));

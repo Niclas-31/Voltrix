@@ -1,12 +1,12 @@
 package de.niclasl.voltrix.common.registries.menus;
 
 import de.niclasl.voltrix.common.registries.blocks.entities.FuelGeneratorEntity;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,19 +18,16 @@ public class FuelGeneratorMenu extends AbstractContainerMenu {
     private final ContainerData data;
 
     public FuelGeneratorMenu(int id, Inventory inventory, FriendlyByteBuf buf) {
-        this(id, inventory, getGenerator(inventory, buf));
+        this(id, inventory, inventory.player.level().getBlockEntity(buf.readBlockPos()), new SimpleContainerData(4));
     }
 
-    public FuelGeneratorMenu(int containerId,
-                             Inventory inventory,
-                             FuelGeneratorEntity generator) {
-
+    public FuelGeneratorMenu(int containerId, Inventory inventory, BlockEntity be, ContainerData data) {
         super(ModMenuTypes.FUEL_GENERATOR.get(), containerId);
 
-        checkContainerSize(generator, 1);
+        this.generator = (FuelGeneratorEntity)be;
+        this.data = data;
 
-        this.generator = generator;
-        this.data = generator.getContainerData();
+        checkContainerSize(generator, 1);
 
         this.addSlot(new Slot(generator, 0, 80, 36) {
             @Override
@@ -62,19 +59,6 @@ public class FuelGeneratorMenu extends AbstractContainerMenu {
         this.addDataSlots(data);
     }
 
-    private static FuelGeneratorEntity getGenerator(Inventory inventory, FriendlyByteBuf buf) {
-
-        BlockPos pos = buf.readBlockPos();
-
-        BlockEntity blockEntity = inventory.player.level().getBlockEntity(pos);
-
-        if (!(blockEntity instanceof FuelGeneratorEntity generator)) {
-            throw new IllegalStateException("Expected FuelGeneratorEntity at " + pos);
-        }
-
-        return generator;
-    }
-
     @Override
     public @NonNull ItemStack quickMoveStack(@NonNull Player player, int index) {
 
@@ -94,13 +78,10 @@ public class FuelGeneratorMenu extends AbstractContainerMenu {
 
             } else {
                 if (this.isFuel(stackInSlot)) {
-
                     if (!this.moveItemStackTo(stackInSlot, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
-
                 } else {
-
                     return ItemStack.EMPTY;
                 }
             }

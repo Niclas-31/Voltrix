@@ -10,7 +10,6 @@ import net.minecraft.world.level.block.Block;
 
 public class ModTags {
     public static class Blocks {
-        public static final TagKey<Block> CONNECTABLE_BLOCKS = createTag("connectable_blocks");
 
         private static TagKey<Block> createTag(String name) {
             return BlockTags.create(Identifier.fromNamespaceAndPath(Voltrix.MOD_ID, name));

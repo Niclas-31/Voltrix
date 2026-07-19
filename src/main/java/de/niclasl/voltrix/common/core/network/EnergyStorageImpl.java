@@ -1,4 +1,4 @@
-package de.niclasl.voltrix.common.core.impl;
+package de.niclasl.voltrix.common.core.network;
 
 import de.niclasl.voltrix_api.energy.IEnergyStorage;
 
@@ -38,6 +38,11 @@ public class EnergyStorageImpl implements IEnergyStorage {
     @Override
     public long getEnergyStored() {
         return energy;
+    }
+
+    @Override
+    public void setEnergy(long energy) {
+        this.energy = Math.clamp(energy, 0, capacity);
     }
 
     @Override
