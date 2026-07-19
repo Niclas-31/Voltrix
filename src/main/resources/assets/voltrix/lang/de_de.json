@@ -12,6 +12,7 @@
   "item.voltrix.wrench.update": "%s: %s",
 
   "message.voltrix.cable.insulated": "Kabel ist nun Isoliert.",
+  "message.voltrix.cable.no_insulated": "Kabel ist nicht mehr Isoliert.",
 
   "death.attack.electricity": "%1$s wurde durch Strom getötet",
   "death.attack.electricity.player": "%1$s wurde von %2$s elektrisch getötet"

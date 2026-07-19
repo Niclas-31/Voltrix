@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -23,6 +24,10 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
     private final EnumMap<Direction, Boolean> poweredSides = new EnumMap<>(Direction.class);
     private int shockTimer;
     private boolean insulated = false;
+    private ItemStack insulation = ItemStack.EMPTY;
+
+    private static final double MIN = 0.375;
+    private static final double MAX = 0.625;
 
     public AbstractCableEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState, long capacity) {
         super(type, pos, blockState, capacity);
@@ -55,11 +60,21 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
         }
     }
 
+    public ItemStack getInsulation() {
+        return insulation;
+    }
+
+    public void setInsulation(ItemStack stack) {
+        insulation = stack.copyWithCount(1);
+        setChanged();
+    }
+
     @Override
     protected void loadAdditional(@NonNull ValueInput input) {
         super.loadAdditional(input);
 
         this.insulated = input.getBooleanOr("insulated", false);
+        this.insulation = input.read("insulatedStack", ItemStack.CODEC).orElse(ItemStack.EMPTY);
     }
 
     @Override
@@ -67,6 +82,7 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
         super.saveAdditional(output);
 
         output.putBoolean("insulated", this.insulated);
+        output.store("insulatedStack", ItemStack.CODEC, this.insulation);
     }
 
     public static void serverTick(Level level, AbstractCableEntity cable) {
@@ -107,12 +123,39 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
                 continue;
             }
 
+            BlockPos firePos = worldPosition.relative(direction);
+
+            BlockState neighborState = level.getBlockState(firePos);
+
+            int voltage = getElectricalProperties().outputVoltage();
+
+            if (voltage < 100) {
+                continue;
+            }
+
+            if (neighborState.isFlammable(level, worldPosition, direction.getOpposite())) {
+                level.setBlockAndUpdate(firePos, neighborState);
+            }
+
             for (Player player : players) {
                 if (isPlayerTouchingSide(player, direction)) {
-                    shock(player, 4.0F);
+                    shock(player, calculateShockDamage(voltage));
                 }
             }
         }
+    }
+
+    private float calculateShockDamage(int voltage) {
+
+        if (voltage >= 240) {
+            return 8.0F;
+        }
+
+        if (voltage >= 120) {
+            return 5.0F;
+        }
+
+        return 2.0F;
     }
 
     private boolean isPlayerTouchingSide(Player player, Direction direction) {
@@ -121,12 +164,54 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
         int z = worldPosition.getZ();
 
         AABB box = switch (direction) {
-            case EAST  -> new AABB(x + 0.9, y, z, x + 1.0, y + 1, z + 1);
-            case WEST  -> new AABB(x, y, z, x + 0.1, y + 1, z + 1);
-            case NORTH -> new AABB(x, y, z, x + 1, y + 1, z + 0.1);
-            case SOUTH -> new AABB(x, y, z + 0.9, x + 1, y + 1, z + 1);
-            case UP    -> new AABB(x, y + 0.9, z, x + 1, y + 1, z + 1);
-            case DOWN  -> new AABB(x, y, z, x + 1, y + 0.1, z + 1);
+            case EAST -> new AABB(
+                    x + MAX,
+                    y + MIN,
+                    z + MIN,
+                    x + 1,
+                    y + MAX,
+                    z + MAX
+            );
+            case WEST -> new AABB(
+                    x,
+                    y + MIN,
+                    z + MIN,
+                    x + (1 - MAX),
+                    y + MAX,
+                    z + MAX
+            );
+            case NORTH -> new AABB(
+                    x + MIN,
+                    y + MIN,
+                    z,
+                    x + MAX,
+                    y + MAX,
+                    z + (1 - MAX)
+            );
+            case SOUTH -> new AABB(
+                    x + MIN,
+                    y + MIN,
+                    z + MAX,
+                    x + MAX,
+                    y + MAX,
+                    z + 1
+            );
+            case UP -> new AABB(
+                    x + MIN,
+                    y + MAX,
+                    z + MIN,
+                    x + MAX,
+                    y + 1,
+                    z + MAX
+            );
+            case DOWN -> new AABB(
+                    x + MIN,
+                    y,
+                    z + MIN,
+                    x + MAX,
+                    y + (1 - MAX),
+                    z + MAX
+            );
         };
 
         return player.getBoundingBox().intersects(box);

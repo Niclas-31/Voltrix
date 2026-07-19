@@ -24,11 +24,26 @@ public class EnergyTransferEngine {
 
         double voltage = producerProperties.outputVoltage();
 
+        int amperage = producerProperties.outputAmperage();
+
+        long transferRate = Long.MAX_VALUE;
+
         for (BlockPos pos : path.cables()) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
 
             if (blockEntity instanceof AbstractCableEntity cable) {
-                voltage -= cable.getElectricalProperties().cableLoss();
+                ElectricalProperties cableProperties = cable.getElectricalProperties();
+
+                voltage -= cableProperties.cableLoss();
+
+                if (voltage > cableProperties.inputVoltage()) {
+                    onCableOverVoltage(cable, voltage);
+                    return;
+                }
+
+                amperage = Math.min(amperage, cableProperties.inputAmperage());
+
+                transferRate = Math.min(transferRate, cableProperties.transferRate());
             }
         }
 
@@ -41,8 +56,6 @@ public class EnergyTransferEngine {
             return;
         }
 
-        int amperage = producerProperties.outputAmperage();
-
         if (amperage <= 0) {
             return;
         }
@@ -53,6 +66,12 @@ public class EnergyTransferEngine {
         }
 
         long energy = (long) voltage * amperage;
+
+        energy = Math.min(energy, transferRate);
+
+        if (energy <= 0) {
+            return;
+        }
 
         long extracted = producer.getStorage().extractEnergy(energy, true);
         long inserted = consumer.getStorage().receiveEnergy(extracted, true);
@@ -76,7 +95,16 @@ public class EnergyTransferEngine {
         }
     }
 
-    protected void onOverVoltage(IEnergyConsumer consumer, double voltage) {
+    private void onCableOverVoltage(AbstractCableEntity cable, double voltage) {
+        System.out.println(
+                "Over Voltage! Received: "
+                        + voltage
+                        + "V Max: "
+                        + cable.getElectricalProperties().inputVoltage()
+        );
+    }
+
+    private void onOverVoltage(IEnergyConsumer consumer, double voltage) {
         System.out.println(
                 "Over Voltage! Received: "
                         + voltage
@@ -85,7 +113,7 @@ public class EnergyTransferEngine {
         );
     }
 
-    protected void onOverCurrent(IEnergyConsumer consumer, int amperage) {
+    private void onOverCurrent(IEnergyConsumer consumer, int amperage) {
         System.out.println(
                 "Over Current! Received: "
                         + amperage

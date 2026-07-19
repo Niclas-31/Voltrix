@@ -13,6 +13,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -60,28 +61,28 @@ public abstract class AbstractCableBlock extends BaseEntityBlock {
             Block.box(6, 6, 3, 10, 10, 6),
             Block.box(5, 5, 2, 11, 11, 3),
             Block.box(4, 4, 1, 12, 12, 2),
-            Block.box(3, 3, 0, 13, 13, 1)
+            Block.box(2, 2, 0, 14, 14, 1)
     );
 
     public static final VoxelShape MACHINE_SOUTH_SHAPE = Shapes.or(
             Block.box(6, 6, 10, 10, 10, 13),
             Block.box(5, 5, 13, 11, 11, 14),
             Block.box(4, 4, 14, 12, 12, 15),
-            Block.box(3, 3, 15, 13, 13, 16)
+            Block.box(2, 2, 15, 14, 14, 16)
     );
 
     public static final VoxelShape MACHINE_WEST_SHAPE = Shapes.or(
             Block.box(3, 6, 6, 6, 10, 10),
             Block.box(2, 5, 5, 3, 11, 11),
             Block.box(1, 4, 4, 2, 12, 12),
-            Block.box(0, 3, 3, 1, 13, 13)
+            Block.box(0, 2, 2, 1, 14, 14)
     );
 
     public static final VoxelShape MACHINE_EAST_SHAPE = Shapes.or(
             Block.box(10, 6, 6, 13, 10, 10),
             Block.box(13, 5, 5, 14, 11, 11),
             Block.box(14, 4, 4, 15, 12, 12),
-            Block.box(15, 3, 3, 16, 13, 13)
+            Block.box(15, 2, 2, 16, 14, 14)
     );
 
     public static final VoxelShape MACHINE_DOWN_SHAPE = Shapes.or(
@@ -204,12 +205,44 @@ public abstract class AbstractCableBlock extends BaseEntityBlock {
                                                    @NonNull BlockPos pos, @NonNull Player player, @NonNull InteractionHand hand,
                                                    @NonNull BlockHitResult hitResult
     ) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+
+        if (stack.getItem() instanceof ShearsItem) {
+            if (!(blockEntity instanceof AbstractCableEntity cable)) {
+                return InteractionResult.PASS;
+            }
+
+            if (level.isClientSide()) {
+                return InteractionResult.SUCCESS;
+            }
+
+            if (!cable.isInsulated()) {
+                return InteractionResult.FAIL;
+            }
+
+            cable.setInsulated(false);
+
+            ItemStack insulation = cable.getInsulation().copy();
+
+            if (!insulation.isEmpty()) {
+                if (!player.getInventory().add(insulation)) {
+                    player.drop(insulation, false);
+                }
+            }
+
+            cable.setInsulation(ItemStack.EMPTY);
+
+            player.displayClientMessage(
+                    Component.translatable("message.voltrix.cable.no_insulated"),
+                    true
+            );
+
+            return InteractionResult.SUCCESS;
+        }
 
         if (!stack.is(ItemTags.WOOL)) {
             return InteractionResult.PASS;
         }
-
-        BlockEntity blockEntity = level.getBlockEntity(pos);
 
         if (!(blockEntity instanceof AbstractCableEntity cable)) {
             return InteractionResult.PASS;
@@ -224,6 +257,7 @@ public abstract class AbstractCableBlock extends BaseEntityBlock {
         }
 
         cable.setInsulated(true);
+        cable.setInsulation(stack.copyWithCount(1));
 
         if (!player.getAbilities().instabuild) {
             stack.shrink(1);
