@@ -1,6 +1,6 @@
 package de.niclasl.voltrix.common.registries.menus;
 
-import de.niclasl.voltrix.common.registries.blocks.entities.FuelGeneratorEntity;
+import de.niclasl.voltrix.common.registries.blocks.entities.producer.FuelGeneratorEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;

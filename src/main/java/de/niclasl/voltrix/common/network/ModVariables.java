@@ -1,5 +1,6 @@
 package de.niclasl.voltrix.common.network;
 
+import com.mojang.serialization.Codec;
 import de.niclasl.voltrix.Voltrix;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -97,11 +98,17 @@ public class ModVariables {
     }
 
     public static class MapVariables extends SavedData {
-        public static final SavedDataType<MapVariables> TYPE = new SavedDataType<>("map_variables", ctx -> new MapVariables(), ctx -> CompoundTag.CODEC.xmap(tag -> {
-            MapVariables instance = new MapVariables();
-            instance.read(tag);
-            return instance;
-        }, instance -> instance.save(new CompoundTag())));
+        public static final Codec<MapVariables> CODEC = CompoundTag.CODEC.xmap(
+                tag -> {
+                    MapVariables instance = new MapVariables();
+                    instance.read(tag);
+                    return instance;
+                }, instance -> instance.save(new CompoundTag())
+        );
+        public static final SavedDataType<MapVariables> TYPE =
+                new SavedDataType<>(
+                        Identifier.fromNamespaceAndPath(Voltrix.MOD_ID, "map_variables"),
+                        MapVariables::new, CODEC);
         boolean syncDirty = false;
 
         public void read(CompoundTag nbt) {

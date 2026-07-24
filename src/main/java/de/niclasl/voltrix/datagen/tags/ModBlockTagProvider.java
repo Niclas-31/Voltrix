@@ -20,11 +20,13 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(ModBlocks.COPPER_CABLE.get())
                 .add(ModBlocks.FUEL_GENERATOR.get())
-                .add(ModBlocks.ELECTRIC_FURNACE.get());
+                .add(ModBlocks.ELECTRIC_FURNACE.get())
+                .add(ModBlocks.SOLAR_PANEL.get());
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(ModBlocks.COPPER_CABLE.get())
                 .add(ModBlocks.FUEL_GENERATOR.get())
-                .add(ModBlocks.ELECTRIC_FURNACE.get());
+                .add(ModBlocks.ELECTRIC_FURNACE.get())
+                .add(ModBlocks.SOLAR_PANEL.get());
     }
 }

@@ -3,7 +3,7 @@ package de.niclasl.voltrix.client.screen;
 import de.niclasl.voltrix.Voltrix;
 import de.niclasl.voltrix.common.registries.menus.ElectricFurnaceMenu;
 import de.niclasl.voltrix.common.registries.menus.recipe.ElectricFurnaceRecipeBookComponent;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -15,7 +15,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 import java.util.List;
@@ -44,9 +43,6 @@ public class ElectricFurnaceScreen extends AbstractRecipeBookScreen<ElectricFurn
         );
         this.texture = TEXTURE;
         this.burnProgressSprite = BURN_PROGRESS_SPRITE;
-
-        this.imageWidth = 176;
-        this.imageHeight = 166;
     }
 
     @Override
@@ -61,14 +57,13 @@ public class ElectricFurnaceScreen extends AbstractRecipeBookScreen<ElectricFurn
     }
 
     @Override
-    protected void renderLabels(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(@NonNull GuiGraphicsExtractor graphics, int xm, int ym) {
+        super.extractLabels(graphics, xm, ym);
 
-        String energy =
-                menu.getEnergyStored() + "/" + menu.getEnergyCapacity();
+        String energy = menu.getEnergyStored() + "/" + menu.getEnergyCapacity();
 
-        guiGraphics.drawString(
-                font,
+        graphics.text(
+                this.font,
                 energy,
                 90,
                 16,
@@ -76,24 +71,27 @@ public class ElectricFurnaceScreen extends AbstractRecipeBookScreen<ElectricFurn
         );
     }
 
+
     @Override
-    protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
+
         int x = this.leftPos;
         int y = this.topPos;
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.texture, x, y, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, this.texture, x, y, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
 
         int j1 = Mth.ceil(this.menu.getBurnProgress() * 24.0F);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.burnProgressSprite, 24, 16, 0, 0, x + 79, y + 34, j1, 16);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.burnProgressSprite, 24, 16, 0, 0, x + 79, y + 34, j1, 16);
 
         int batteryX = x + 150;
         int batteryY = y + 26;
 
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BATTERY, batteryX, batteryY, 16, 16);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BATTERY, batteryX, batteryY, 16, 16);
 
         int fill = menu.getEnergyScaled(14);
 
         if (fill > 0) {
-            guiGraphics.blitSprite(
+            graphics.blitSprite(
                     RenderPipelines.GUI_TEXTURED,
                     BATTERY_PROGRESS,
                     6,

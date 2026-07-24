@@ -1,9 +1,13 @@
-package de.niclasl.voltrix.common.registries.blocks.entities;
+package de.niclasl.voltrix.common.registries.blocks.entities.consumer;
 
 import com.mojang.serialization.Codec;
 import de.niclasl.voltrix.common.core.EnergyNetworkManager;
+import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
+import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractMachineEntity;
 import de.niclasl.voltrix.common.registries.menus.ElectricFurnaceMenu;
+import de.niclasl.voltrix_api.energy.AmperageTier;
 import de.niclasl.voltrix_api.energy.ElectricalProperties;
+import de.niclasl.voltrix_api.energy.VoltageTier;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -29,7 +33,7 @@ import java.util.Map;
 
 public class ElectricFurnaceEntity extends AbstractMachineEntity implements Container, MenuProvider {
     private static final ElectricalProperties PROPERTIES =
-            ElectricalProperties.consumer(120, 20);
+            ElectricalProperties.machine(VoltageTier.MV, AmperageTier.A16);
 
     private NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
 
@@ -43,7 +47,7 @@ public class ElectricFurnaceEntity extends AbstractMachineEntity implements Cont
     private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> quickCheck;
 
     public ElectricFurnaceEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.ELECTRIC_FURNACE.get(), pos, state, 100000);
+        super(ModBlockEntities.ELECTRIC_FURNACE.get(), pos, state, 100000, PROPERTIES);
 
         this.quickCheck = RecipeManager.createCheck(RecipeType.SMELTING);
     }
@@ -70,11 +74,6 @@ public class ElectricFurnaceEntity extends AbstractMachineEntity implements Cont
         output.putInt("lit_total_time", this.litTotalTime);
         ContainerHelper.saveAllItems(output, this.items);
         output.store("RecipesUsed", RECIPES_USED_CODEC, this.recipesUsed);
-    }
-
-    @Override
-    public ElectricalProperties getElectricalProperties() {
-        return PROPERTIES;
     }
 
     @Override
@@ -184,11 +183,7 @@ public class ElectricFurnaceEntity extends AbstractMachineEntity implements Cont
             return false;
         }
 
-        ItemStack result =
-                recipe.value().assemble(
-                        new SingleRecipeInput(getItem(0)),
-                        level.registryAccess()
-                );
+        ItemStack result = recipe.value().assemble(new SingleRecipeInput(getItem(0)));
 
         ItemStack output = getItem(1);
 
@@ -206,11 +201,7 @@ public class ElectricFurnaceEntity extends AbstractMachineEntity implements Cont
 
     @Override
     protected void finishRecipe(ServerLevel level, RecipeHolder<? extends AbstractCookingRecipe> recipe) {
-        ItemStack result =
-                recipe.value().assemble(
-                        new SingleRecipeInput(getItem(0)),
-                        level.registryAccess()
-                );
+        ItemStack result = recipe.value().assemble(new SingleRecipeInput(getItem(0)));
 
         getItem(0).shrink(1);
 

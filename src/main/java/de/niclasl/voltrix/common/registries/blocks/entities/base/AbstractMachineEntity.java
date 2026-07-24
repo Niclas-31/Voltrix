@@ -1,5 +1,6 @@
-package de.niclasl.voltrix.common.registries.blocks.entities;
+package de.niclasl.voltrix.common.registries.blocks.entities.base;
 
+import de.niclasl.voltrix_api.energy.ElectricalProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.ContainerData;
@@ -42,8 +43,9 @@ public abstract class AbstractMachineEntity extends AbstractConsumerEntity imple
         }
     };
 
-    public AbstractMachineEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, long capacity) {
-        super(type, pos, state, capacity);
+    public AbstractMachineEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, long capacity,
+                                 ElectricalProperties properties) {
+        super(type, pos, state, capacity, properties);
     }
 
     public static void serverTick(ServerLevel level, AbstractMachineEntity machine) {

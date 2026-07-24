@@ -1,7 +1,8 @@
-package de.niclasl.voltrix.common.registries.blocks.custom;
+package de.niclasl.voltrix.common.registries.blocks.custom.cable;
 
 import com.mojang.serialization.MapCodec;
-import de.niclasl.voltrix.common.registries.blocks.entities.CopperCableEntity;
+import de.niclasl.voltrix.common.registries.blocks.custom.base.AbstractCableBlock;
+import de.niclasl.voltrix.common.registries.blocks.entities.cable.CopperCableEntity;
 import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -33,7 +34,7 @@ public class CopperCable extends AbstractCableBlock {
                 ? createTickerHelper(
                         serverType,
                 ModBlockEntities.COPPER_CABLE.get(),
-                (p_380330_, p_379922_, p_379493_, p_380329_) -> CopperCableEntity.serverTick(serverLevel, p_380329_)
+                (_, _, _, p_380329_) -> CopperCableEntity.serverTick(serverLevel, p_380329_)
         )
                 : null;
     }

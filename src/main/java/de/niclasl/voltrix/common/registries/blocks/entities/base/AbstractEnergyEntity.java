@@ -1,11 +1,8 @@
-package de.niclasl.voltrix.common.registries.blocks.entities;
+package de.niclasl.voltrix.common.registries.blocks.entities.base;
 
 import com.mojang.serialization.Codec;
 import de.niclasl.voltrix_api.VoltrixAPI;
-import de.niclasl.voltrix_api.energy.ConnectionMode;
-import de.niclasl.voltrix_api.energy.IEnergyConnectable;
-import de.niclasl.voltrix_api.energy.IEnergyNode;
-import de.niclasl.voltrix_api.energy.IEnergyStorage;
+import de.niclasl.voltrix_api.energy.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,11 +18,14 @@ public abstract class AbstractEnergyEntity extends BlockEntity implements IEnerg
 
     protected final IEnergyStorage storage;
     protected final EnumMap<Direction, ConnectionMode> connections = new EnumMap<>(Direction.class);
+    protected final ElectricalProperties properties;
 
-    protected AbstractEnergyEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, long capacity) {
+    protected AbstractEnergyEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, long capacity,
+                                   ElectricalProperties properties) {
         super(type, pos, state);
 
         this.storage = VoltrixAPI.createStorage(capacity);
+        this.properties = properties;
 
         for (Direction direction : Direction.values()) {
             connections.put(direction, ConnectionMode.BOTH);
@@ -60,6 +60,11 @@ public abstract class AbstractEnergyEntity extends BlockEntity implements IEnerg
     @Override
     public IEnergyStorage getStorage() {
         return storage;
+    }
+
+    @Override
+    public ElectricalProperties getElectricalProperties() {
+        return this.properties;
     }
 
     @Override

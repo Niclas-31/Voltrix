@@ -1,7 +1,7 @@
-package de.niclasl.voltrix.common.registries.blocks.custom;
+package de.niclasl.voltrix.common.registries.blocks.custom.producer;
 
 import com.mojang.serialization.MapCodec;
-import de.niclasl.voltrix.common.registries.blocks.entities.FuelGeneratorEntity;
+import de.niclasl.voltrix.common.registries.blocks.entities.producer.FuelGeneratorEntity;
 import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
 import de.niclasl.voltrix.common.registries.items.custom.WrenchItem;
 import net.minecraft.core.BlockPos;
@@ -59,7 +59,7 @@ public class FuelGenerator extends BaseEntityBlock {
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NonNull Level level, @NonNull BlockState state,
                                                                             @NonNull BlockEntityType<T> type) {
         return type == ModBlockEntities.FUEL_GENERATOR.get()
-                ? (lvl, pos, st, be) -> FuelGeneratorEntity.tick(level, (FuelGeneratorEntity) be)
+                ? (_, _, _, be) -> FuelGeneratorEntity.tick(level, (FuelGeneratorEntity) be)
                 : null;
     }
 }

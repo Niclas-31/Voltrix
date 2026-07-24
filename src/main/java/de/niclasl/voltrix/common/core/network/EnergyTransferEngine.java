@@ -1,9 +1,10 @@
 package de.niclasl.voltrix.common.core.network;
 
-import de.niclasl.voltrix.common.registries.blocks.entities.AbstractCableEntity;
+import de.niclasl.voltrix.Voltrix;
 import de.niclasl.voltrix_api.energy.ElectricalProperties;
 import de.niclasl.voltrix_api.energy.IEnergyConsumer;
 import de.niclasl.voltrix_api.energy.IEnergyProducer;
+import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractCableEntity;
 import de.niclasl.voltrix_api.energy.NetworkPath;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -22,9 +23,9 @@ public class EnergyTransferEngine {
         ElectricalProperties producerProperties = producer.getElectricalProperties();
         ElectricalProperties consumerProperties = consumer.getElectricalProperties();
 
-        double voltage = producerProperties.outputVoltage();
+        double voltage = producerProperties.outputVoltageValue();
 
-        int amperage = producerProperties.outputAmperage();
+        int amperage = producerProperties.outputAmperageValue();
 
         long transferRate = Long.MAX_VALUE;
 
@@ -36,12 +37,12 @@ public class EnergyTransferEngine {
 
                 voltage -= cableProperties.cableLoss();
 
-                if (voltage > cableProperties.inputVoltage()) {
+                if (voltage > cableProperties.inputVoltageValue()) {
                     onCableOverVoltage(cable, voltage);
                     return;
                 }
 
-                amperage = Math.min(amperage, cableProperties.inputAmperage());
+                amperage = Math.min(amperage, cableProperties.inputAmperageValue());
 
                 transferRate = Math.min(transferRate, cableProperties.transferRate());
             }
@@ -51,7 +52,7 @@ public class EnergyTransferEngine {
             return;
         }
 
-        if (voltage > consumerProperties.inputVoltage()) {
+        if (voltage > consumerProperties.inputVoltageValue()) {
             onOverVoltage(consumer, voltage);
             return;
         }
@@ -60,7 +61,7 @@ public class EnergyTransferEngine {
             return;
         }
 
-        if (amperage > consumerProperties.inputAmperage()) {
+        if (amperage > consumerProperties.inputAmperageValue()) {
             onOverCurrent(consumer, amperage);
             return;
         }
@@ -89,36 +90,39 @@ public class EnergyTransferEngine {
 
             BlockEntity blockEntity = level.getBlockEntity(pos);
 
-            if (blockEntity instanceof AbstractCableEntity entity) {
-                entity.setPowered(true);
+            if (blockEntity instanceof AbstractCableEntity cable) {
+                cable.setPowered(true);
             }
         }
     }
 
     private void onCableOverVoltage(AbstractCableEntity cable, double voltage) {
-        System.out.println(
-                "Over Voltage! Received: "
-                        + voltage
-                        + "V Max: "
-                        + cable.getElectricalProperties().inputVoltage()
+        ElectricalProperties properties = cable.getElectricalProperties();
+
+        Voltrix.LOGGER.warn(
+                "Cable Over Voltage! Received: {}V Max: {}V",
+                voltage,
+                properties.inputVoltageValue()
         );
     }
 
     private void onOverVoltage(IEnergyConsumer consumer, double voltage) {
-        System.out.println(
-                "Over Voltage! Received: "
-                        + voltage
-                        + "V Max: "
-                        + consumer.getElectricalProperties().inputVoltage()
+        ElectricalProperties properties = consumer.getElectricalProperties();
+
+        Voltrix.LOGGER.warn(
+                "Consumer Over Voltage! Received: {}V Max: {}V",
+                voltage,
+                properties.inputVoltageValue()
         );
     }
 
     private void onOverCurrent(IEnergyConsumer consumer, int amperage) {
-        System.out.println(
-                "Over Current! Received: "
-                        + amperage
-                        + "A Max: "
-                        + consumer.getElectricalProperties().inputAmperage()
+        ElectricalProperties properties = consumer.getElectricalProperties();
+
+        Voltrix.LOGGER.warn(
+                "Consumer Over Current! Received: {}A Max: {}A",
+                amperage,
+                properties.inputAmperageValue()
         );
     }
 }

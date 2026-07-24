@@ -1,4 +1,22 @@
 {
   "entries": [
+    {
+      "enum": "net/minecraft/world/item/Rarity",
+      "name": "VOLTRIX_MYTHIC",
+      "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
+      "parameters": {
+        "class": "de/niclasl/voltrix/extensions/ModExtensions",
+        "field": "MYTHIC"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/item/Rarity",
+      "name": "VOLTRIX_LEGENDARY",
+      "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
+      "parameters": {
+        "class": "de/niclasl/voltrix/extensions/ModExtensions",
+        "field": "LEGENDARY"
+      }
+    }
   ]
 }

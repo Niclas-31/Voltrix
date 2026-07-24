@@ -4,7 +4,7 @@ import de.niclasl.voltrix_api.energy.IEnergyStorage;
 
 public class EnergyStorageImpl implements IEnergyStorage {
 
-    private long energy;
+    private long storedEnergy;
     private final long capacity;
 
     public EnergyStorageImpl(long capacity) {
@@ -14,10 +14,10 @@ public class EnergyStorageImpl implements IEnergyStorage {
     @Override
     public long receiveEnergy(long amount, boolean simulate) {
 
-        long accepted = Math.clamp(amount, 0, capacity - energy);
+        long accepted = Math.clamp(amount, 0, capacity - storedEnergy);
 
         if (!simulate) {
-            energy += accepted;
+            storedEnergy += accepted;
         }
 
         return accepted;
@@ -26,10 +26,10 @@ public class EnergyStorageImpl implements IEnergyStorage {
     @Override
     public long extractEnergy(long amount, boolean simulate) {
 
-        long extracted = Math.clamp(amount, 0, energy);
+        long extracted = Math.clamp(amount, 0, storedEnergy);
 
         if (!simulate) {
-            energy -= extracted;
+            storedEnergy -= extracted;
         }
 
         return extracted;
@@ -37,12 +37,12 @@ public class EnergyStorageImpl implements IEnergyStorage {
 
     @Override
     public long getEnergyStored() {
-        return energy;
+        return storedEnergy;
     }
 
     @Override
     public void setEnergy(long energy) {
-        this.energy = Math.clamp(energy, 0, capacity);
+        this.storedEnergy = Math.clamp(energy, 0, capacity);
     }
 
     @Override

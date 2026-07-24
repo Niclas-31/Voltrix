@@ -1,15 +1,16 @@
-package de.niclasl.voltrix.common.registries.blocks.entities;
+package de.niclasl.voltrix.common.registries.blocks.entities.base;
 
-import de.niclasl.voltrix.common.registries.damage_types.VoltrixDamageSources;
 import de.niclasl.voltrix_api.energy.ConnectionMode;
+import de.niclasl.voltrix_api.energy.ElectricalProperties;
 import de.niclasl.voltrix_api.energy.IEnergyCable;
+import de.niclasl.voltrix.common.registries.damage_types.VoltrixDamageSources;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -23,14 +24,14 @@ import java.util.List;
 public abstract class AbstractCableEntity extends AbstractEnergyEntity implements IEnergyCable {
     private final EnumMap<Direction, Boolean> poweredSides = new EnumMap<>(Direction.class);
     private int shockTimer;
-    private boolean insulated = false;
     private ItemStack insulation = ItemStack.EMPTY;
 
     private static final double MIN = 0.375;
     private static final double MAX = 0.625;
 
-    public AbstractCableEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState, long capacity) {
-        super(type, pos, blockState, capacity);
+    public AbstractCableEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState, long capacity,
+                               ElectricalProperties properties) {
+        super(type, pos, blockState, capacity, properties);
 
         for (Direction direction : Direction.values()) {
             poweredSides.put(direction, false);
@@ -42,22 +43,7 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
     }
 
     public boolean isInsulated() {
-        return insulated;
-    }
-
-    public void setInsulated(boolean insulated) {
-        this.insulated = insulated;
-
-        setChanged();
-
-        if (level != null && !level.isClientSide()) {
-            level.sendBlockUpdated(
-                    worldPosition,
-                    getBlockState(),
-                    getBlockState(),
-                    Block.UPDATE_ALL
-            );
-        }
+        return !insulation.isEmpty();
     }
 
     public ItemStack getInsulation() {
@@ -65,7 +51,12 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
     }
 
     public void setInsulation(ItemStack stack) {
-        insulation = stack.copyWithCount(1);
+        if (stack.isEmpty()) {
+            insulation = ItemStack.EMPTY;
+        } else {
+            this.insulation = stack.copyWithCount(1);
+        }
+
         setChanged();
     }
 
@@ -73,7 +64,6 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
     protected void loadAdditional(@NonNull ValueInput input) {
         super.loadAdditional(input);
 
-        this.insulated = input.getBooleanOr("insulated", false);
         this.insulation = input.read("insulatedStack", ItemStack.CODEC).orElse(ItemStack.EMPTY);
     }
 
@@ -81,8 +71,9 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
     protected void saveAdditional(@NonNull ValueOutput output) {
         super.saveAdditional(output);
 
-        output.putBoolean("insulated", this.insulated);
-        output.store("insulatedStack", ItemStack.CODEC, this.insulation);
+        if (!this.insulation.isEmpty()) {
+            output.store("insulatedStack", ItemStack.CODEC, this.insulation);
+        }
     }
 
     public static void serverTick(Level level, AbstractCableEntity cable) {
@@ -93,27 +84,27 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
         if (cable.shockTimer >= 5) {
             cable.shockTimer = 0;
 
-            cable.checkPlayerContact();
+            cable.checkEntityContact();
         }
     }
 
-    private void checkPlayerContact() {
+    private void checkEntityContact() {
 
         if (level == null || level.isClientSide()) {
             return;
         }
 
-        List<Player> players = level.getEntitiesOfClass(
-                Player.class,
+        List<Entity> entities = level.getEntitiesOfClass(
+                Entity.class,
                 new AABB(worldPosition).inflate(0.1)
         );
 
+        if (isInsulated()) {
+            return;
+        }
+
         for (Direction direction : Direction.values()) {
             ConnectionMode mode = getConnectionMode(direction);
-
-            if (isInsulated()) {
-                return;
-            }
 
             if (mode != ConnectionMode.OUTPUT && mode != ConnectionMode.BOTH) {
                 continue;
@@ -123,42 +114,51 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
                 continue;
             }
 
+            int voltage = getElectricalProperties().outputVoltageValue();
+            int amperage = getElectricalProperties().outputAmperageValue();
+
+            if (voltage < 100 || amperage <= 0) {
+                continue;
+            }
+
             BlockPos firePos = worldPosition.relative(direction);
 
             BlockState neighborState = level.getBlockState(firePos);
 
-            int voltage = getElectricalProperties().outputVoltage();
-
-            if (voltage < 100) {
-                continue;
-            }
-
             if (neighborState.isFlammable(level, worldPosition, direction.getOpposite())) {
-                level.setBlockAndUpdate(firePos, neighborState);
+                level.setBlockAndUpdate(firePos, Blocks.FIRE.defaultBlockState());
             }
 
-            for (Player player : players) {
-                if (isPlayerTouchingSide(player, direction)) {
-                    shock(player, calculateShockDamage(voltage));
+            float damage = calculateShockDamage(voltage, amperage);
+
+            for (Entity entity : entities) {
+                if (isEntityTouchingSide(entity, direction)) {
+                    shock(entity, damage);
                 }
             }
         }
     }
 
-    private float calculateShockDamage(int voltage) {
+    private float calculateShockDamage(int voltage, int current) {
 
-        if (voltage >= 240) {
+        float power = voltage * current;
+
+        if (power >= 10000) {
+            return 12.0F;
+        }
+
+        if (power >= 5000) {
             return 8.0F;
         }
 
-        if (voltage >= 120) {
+        if (power >= 1000) {
             return 5.0F;
         }
 
         return 2.0F;
     }
 
-    private boolean isPlayerTouchingSide(Player player, Direction direction) {
+    private boolean isEntityTouchingSide(Entity entity, Direction direction) {
         int x = worldPosition.getX();
         int y = worldPosition.getY();
         int z = worldPosition.getZ();
@@ -214,13 +214,13 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
             );
         };
 
-        return player.getBoundingBox().intersects(box);
+        return entity.getBoundingBox().intersects(box);
     }
 
-    public void shock(Player player, float damage) {
+    public void shock(Entity entity, float damage) {
         if (!(this.level instanceof ServerLevel serverLevel)) return;
 
-        player.hurt(
+        entity.hurt(
                 VoltrixDamageSources.electricity(serverLevel),
                 damage
         );

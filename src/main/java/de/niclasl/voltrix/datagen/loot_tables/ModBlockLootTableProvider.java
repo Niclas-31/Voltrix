@@ -20,6 +20,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.COPPER_CABLE.get());
         dropSelf(ModBlocks.FUEL_GENERATOR.get());
         dropSelf(ModBlocks.ELECTRIC_FURNACE.get());
+        dropSelf(ModBlocks.SOLAR_PANEL.get());
     }
 
     @Override

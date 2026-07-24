@@ -14,7 +14,7 @@ public record WrenchState(Map<Holder<Block>, Direction> directions) {
     public static final Codec<WrenchState> CODEC =
             Codec.dispatchedMap(
                     BuiltInRegistries.BLOCK.holderByNameCodec(),
-                    holder -> Direction.CODEC
+                    _ -> Direction.CODEC
             ).xmap(WrenchState::new, WrenchState::directions);
 
     public Direction selectedConnection(Holder<Block> block) {

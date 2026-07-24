@@ -1,6 +1,9 @@
 package de.niclasl.voltrix.common.core.network;
 
-import de.niclasl.voltrix_api.energy.*;
+import de.niclasl.voltrix_api.energy.IEnergyCable;
+import de.niclasl.voltrix_api.energy.IEnergyConnectable;
+import de.niclasl.voltrix_api.energy.IEnergyConsumer;
+import de.niclasl.voltrix_api.energy.NetworkPath;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;

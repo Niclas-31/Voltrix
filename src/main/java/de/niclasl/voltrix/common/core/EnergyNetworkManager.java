@@ -18,6 +18,6 @@ public class EnergyNetworkManager {
     }
 
     public static EnergyNetworkImpl getNetwork(ServerLevel level) {
-        return NETWORKS.computeIfAbsent(level, l -> new EnergyNetworkImpl());
+        return NETWORKS.computeIfAbsent(level, _ -> new EnergyNetworkImpl());
     }
 }

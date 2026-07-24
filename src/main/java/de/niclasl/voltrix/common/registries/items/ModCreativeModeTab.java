@@ -27,9 +27,9 @@ public class ModCreativeModeTab {
             CREATIVE_MODE_TABS.register(
                     "voltrix",
                     () -> CreativeModeTab.builder()
-                            .icon(() -> new ItemStack(Items.DIAMOND))
+                            .icon(() -> new ItemStack(ModBlocks.ELECTRIC_FURNACE))
                             .title(Component.translatable("itemGroup.voltrix"))
-                            .displayItems((parameters, output) -> {
+                            .displayItems((_, output) -> {
                                 output.accept(ModItems.WRENCH);
                                 output.accept(ModBlocks.COPPER_CABLE);
                                 output.accept(ModBlocks.FUEL_GENERATOR);
@@ -45,7 +45,7 @@ public class ModCreativeModeTab {
                             .icon(() -> new ItemStack(Items.BRICKS))
                             .withTabsBefore(VOLTRIX)
                             .title(Component.translatable("itemGroup.voltrix_building_blocks"))
-                            .displayItems((parameters, output) -> {
+                            .displayItems((_, output) -> {
                             })
                             .build()
             );

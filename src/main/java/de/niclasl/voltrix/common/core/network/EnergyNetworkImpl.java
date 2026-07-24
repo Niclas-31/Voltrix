@@ -1,6 +1,6 @@
 package de.niclasl.voltrix.common.core.network;
 
-import de.niclasl.voltrix.common.registries.blocks.entities.AbstractCableEntity;
+import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractCableEntity;
 import de.niclasl.voltrix_api.energy.IEnergyProducer;
 import de.niclasl.voltrix_api.energy.NetworkPath;
 import de.niclasl.voltrix_api.network.IEnergyNetwork;

@@ -1,8 +1,12 @@
-package de.niclasl.voltrix.common.registries.blocks.entities;
+package de.niclasl.voltrix.common.registries.blocks.entities.producer;
 
 import de.niclasl.voltrix.common.core.EnergyNetworkManager;
+import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
+import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractProducerEntity;
 import de.niclasl.voltrix.common.registries.menus.FuelGeneratorMenu;
+import de.niclasl.voltrix_api.energy.AmperageTier;
 import de.niclasl.voltrix_api.energy.ElectricalProperties;
+import de.niclasl.voltrix_api.energy.VoltageTier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -15,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -23,7 +28,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public class FuelGeneratorEntity extends AbstractProducerEntity implements Container, MenuProvider {
-    private static final ElectricalProperties PROPERTIES = ElectricalProperties.generator(120, 4);
+    private static final ElectricalProperties PROPERTIES =
+            ElectricalProperties.generator(VoltageTier.MV, AmperageTier.A4);
     private NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
 
     private final ContainerData data = new ContainerData() {
@@ -57,7 +63,7 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
     private int maxBurnTime;
 
     public FuelGeneratorEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.FUEL_GENERATOR.get(), pos, blockState, 204800);
+        super(ModBlockEntities.FUEL_GENERATOR.get(), pos, blockState, 204800, PROPERTIES);
     }
 
     @Override
@@ -76,11 +82,6 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
         ContainerHelper.saveAllItems(output, this.items);
         output.putInt("burnTime", burnTime);
         output.putInt("maxBurnTime", maxBurnTime);
-    }
-
-    @Override
-    public ElectricalProperties getElectricalProperties() {
-        return PROPERTIES;
     }
 
     @Override
@@ -135,12 +136,12 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
         burnTime = burn;
         maxBurnTime = burn;
 
-        ItemStack remainder = stack.getCraftingRemainder();
+        ItemStackTemplate remainder = stack.getCraftingRemainder();
 
         stack.shrink(1);
 
         if (stack.isEmpty()) {
-            items.set(0, remainder);
+            items.set(0, remainder != null ? remainder.create() : ItemStack.EMPTY);
         }
 
         setChanged();

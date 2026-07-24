@@ -50,7 +50,7 @@ description = '''${mod_description}'''
 [[dependencies."${mod_id}"]]
 modId = "voltrix_api"
 type = "required"
-versionRange = "[1,2)"
+versionRange = "[1.0,1.1)"
 ordering = "NONE"
 side = "BOTH"
 

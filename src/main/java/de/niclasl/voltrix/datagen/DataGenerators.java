@@ -47,31 +47,4 @@ public class DataGenerators {
         ));
         generator.addProvider(true, new ModRecipeProvider.Runner(output, lookup));
     }
-
-    @SubscribeEvent
-    public static void gatherClientData(GatherDataEvent.Server event) {
-        DataGenerator generator = event.getGenerator();
-        PackOutput output = generator.getPackOutput();
-        CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
-
-        event.createDatapackRegistryObjects(ModDatapackProvider.BUILDER);
-
-        // event.createProvider(ModBiomeTagProvider::new);
-        event.createProvider(ModBlockTagProvider::new);
-        event.createProvider(ModItemTagProvider::new);
-        event.createProvider(ModEnchantmentTagProvider::new);
-
-        event.createProvider(ModDataMapProvider::new);
-        event.createProvider(ModModelProvider::new);
-
-        generator.addProvider(true, new LootTableProvider(
-                output,
-                Collections.emptySet(),
-                List.of(
-                        new LootTableProvider.SubProviderEntry(ModBlockLootTableProvider::new, LootContextParamSets.BLOCK)
-                ),
-                lookup
-        ));
-        generator.addProvider(true, new ModRecipeProvider.Runner(output, lookup));
-    }
 }

@@ -1,6 +1,6 @@
 package de.niclasl.voltrix.common.registries.items.custom;
 
-import de.niclasl.voltrix.common.registries.blocks.entities.AbstractCableEntity;
+import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractCableEntity;
 import de.niclasl.voltrix.common.registries.components.ModDataComponents;
 import de.niclasl.voltrix.common.registries.components.WrenchState;
 import de.niclasl.voltrix_api.energy.ConnectionMode;
@@ -66,7 +66,7 @@ public class WrenchItem extends Item {
                             WrenchState.EMPTY
                     );
 
-            Holder<Block> holder = level.getBlockState(pos).getBlockHolder();
+            Holder<Block> holder = level.getBlockState(pos).typeHolder();
 
             Direction direction = wrenchState.selectedConnection(holder);
 
@@ -92,7 +92,7 @@ public class WrenchItem extends Item {
     }
 
     private void selectDirection(Player player, ItemStack stack, BlockState state) {
-        Holder<Block> holder = state.getBlockHolder();
+        Holder<Block> holder = state.typeHolder();
 
         WrenchState wrenchState = stack.get(ModDataComponents.WRENCH_STATE.get());
 

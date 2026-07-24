@@ -2,7 +2,7 @@ package de.niclasl.voltrix.client.screen;
 
 import de.niclasl.voltrix.Voltrix;
 import de.niclasl.voltrix.common.registries.menus.FuelGeneratorMenu;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -20,33 +20,31 @@ public class FuelGeneratorScreen extends AbstractContainerScreen<FuelGeneratorMe
 
     public FuelGeneratorScreen(FuelGeneratorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
-
-        this.imageWidth = 176;
-        this.imageHeight = 166;
     }
 
-
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    public void extractBackground(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
+
         int x = this.leftPos;
         int y = this.topPos;
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
         int progress = menu.getBurnProgress();
 
         if (progress > 0) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIT_PROGRESS, 14, 14, 0, 14 - progress, x + 81, y + 36 + (14 - progress), 14, progress);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIT_PROGRESS, 14, 14, 0, 14 - progress, x + 81, y + 36 + (14 - progress), 14, progress);
         }
 
         int batteryX = x + 150;
         int batteryY = y + 26;
 
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BATTERY, batteryX, batteryY, 16, 16);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BATTERY, batteryX, batteryY, 16, 16);
 
         int fill = menu.getEnergyScaled(14);
 
         if (fill > 0) {
-            guiGraphics.blitSprite(
+            graphics.blitSprite(
                     RenderPipelines.GUI_TEXTURED,
                     BATTERY_PROGRESS,
                     6,
@@ -61,14 +59,13 @@ public class FuelGeneratorScreen extends AbstractContainerScreen<FuelGeneratorMe
         }
     }
 
-
     @Override
-    protected void renderLabels(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(@NonNull GuiGraphicsExtractor graphics, int xm, int ym) {
+        super.extractLabels(graphics, xm, ym);
 
         String energy = menu.getEnergyStored() + "/" + menu.getEnergyCapacity();
 
-        guiGraphics.drawString(
+        graphics.text(
                 this.font,
                 energy,
                 90,
