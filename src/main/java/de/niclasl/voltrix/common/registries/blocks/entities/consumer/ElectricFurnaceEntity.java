@@ -77,6 +77,11 @@ public class ElectricFurnaceEntity extends AbstractMachineEntity implements Cont
     }
 
     @Override
+    public boolean canPlaceItem(int slot, @NonNull ItemStack itemStack) {
+        return slot != 1;
+    }
+
+    @Override
     public void onLoad() {
         super.onLoad();
 
