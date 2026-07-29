@@ -2,6 +2,17 @@
   "values": [
     "voltrix:copper_cable",
     "voltrix:fuel_generator",
-    "voltrix:electric_furnace"
+    "voltrix:electric_furnace",
+    "voltrix:solar_panel",
+    "voltrix:steel_block",
+    "voltrix:steel_slab",
+    "voltrix:steel_stairs",
+    "voltrix:steel_wall",
+    "voltrix:steel_fence",
+    "voltrix:steel_fence_gate",
+    "voltrix:steel_pressure_plate",
+    "voltrix:reinforced_copper_steel",
+    "voltrix:reinforced_gold_steel",
+    "voltrix:reinforced_redstone_steel"
   ]
 }

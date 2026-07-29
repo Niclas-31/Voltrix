@@ -1,9 +1,6 @@
 package de.niclasl.voltrix.common.core.network;
 
-import de.niclasl.voltrix_api.energy.IEnergyCable;
-import de.niclasl.voltrix_api.energy.IEnergyConnectable;
-import de.niclasl.voltrix_api.energy.IEnergyConsumer;
-import de.niclasl.voltrix_api.energy.NetworkPath;
+import de.niclasl.voltrix_api.energy.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -41,7 +38,11 @@ public class EnergyNetworkScanner {
                         current.pos,
                         List.copyOf(current.cables)
                 ));
+                continue;
             }
+
+            boolean currentIsProducer = blockEntity instanceof IEnergyProducer;
+            boolean currentIsCable = blockEntity instanceof IEnergyCable;
 
             for (Direction direction : Direction.values()) {
 
@@ -58,6 +59,19 @@ public class EnergyNetworkScanner {
                 }
 
                 if (!nextConnectable.getConnectionMode(direction.getOpposite()).canInput()) {
+                    continue;
+                }
+
+                if (currentIsProducer) {
+                    if (!(nextEntity instanceof IEnergyCable)) {
+                        continue;
+                    }
+                } else if (currentIsCable) {
+                    if (!(nextEntity instanceof IEnergyCable)
+                            && !(nextEntity instanceof IEnergyConsumer)) {
+                        continue;
+                    }
+                } else {
                     continue;
                 }
 

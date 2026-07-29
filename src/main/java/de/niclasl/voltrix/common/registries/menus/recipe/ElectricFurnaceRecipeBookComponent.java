@@ -39,10 +39,10 @@ public class ElectricFurnaceRecipeBookComponent extends RecipeBookComponent<Elec
     }
 
     @Override
-    protected void fillGhostRecipe(GhostSlots slots, RecipeDisplay display, @NonNull ContextMap context) {
-        slots.setResult(this.menu.getResultSlot(), context, display.result());
+    protected void fillGhostRecipe(GhostSlots ghostSlots, RecipeDisplay display, @NonNull ContextMap context) {
+        ghostSlots.setResult(this.menu.getResultSlot(), context, display.result());
         if (display instanceof FurnaceRecipeDisplay recipeDisplay) {
-            slots.setInput(this.menu.slots.getFirst(), context, recipeDisplay.ingredient());
+            ghostSlots.setInput(this.menu.slots.getFirst(), context, recipeDisplay.ingredient());
         }
     }
 

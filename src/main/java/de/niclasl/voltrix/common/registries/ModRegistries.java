@@ -1,12 +1,12 @@
 package de.niclasl.voltrix.common.registries;
 
-import de.niclasl.voltrix.common.network.ModVariables;
 import de.niclasl.voltrix.common.registries.blocks.ModBlocks;
 import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
 import de.niclasl.voltrix.common.registries.components.ModDataComponents;
 import de.niclasl.voltrix.common.registries.items.ModCreativeModeTab;
 import de.niclasl.voltrix.common.registries.items.ModItems;
 import de.niclasl.voltrix.common.registries.menus.ModMenuTypes;
+import de.niclasl.voltrix.common.util.variables.ModVariables;
 import net.neoforged.bus.api.IEventBus;
 
 public class ModRegistries {

@@ -21,12 +21,56 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.COPPER_CABLE.get())
                 .add(ModBlocks.FUEL_GENERATOR.get())
                 .add(ModBlocks.ELECTRIC_FURNACE.get())
-                .add(ModBlocks.SOLAR_PANEL.get());
+                .add(ModBlocks.SOLAR_PANEL.get())
+                .add(ModBlocks.STEEL_BLOCK.get())
+                .add(ModBlocks.STEEL_SLAB.get())
+                .add(ModBlocks.STEEL_STAIRS.get())
+                .add(ModBlocks.STEEL_WALL.get())
+                .add(ModBlocks.STEEL_FENCE.get())
+                .add(ModBlocks.STEEL_FENCE_GATE.get())
+                .add(ModBlocks.STEEL_PRESSURE_PLATE.get())
+                .add(ModBlocks.REINFORCED_COPPER_STEEL.get())
+                .add(ModBlocks.REINFORCED_GOLD_STEEL.get())
+                .add(ModBlocks.REINFORCED_REDSTONE_STEEL.get());
+
+        tag(BlockTags.NEEDS_DIAMOND_TOOL)
+                .add(ModBlocks.REINFORCED_DIAMOND_STEEL.get())
+                .add(ModBlocks.REINFORCED_NETHERITE_STEEL.get());
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(ModBlocks.COPPER_CABLE.get())
                 .add(ModBlocks.FUEL_GENERATOR.get())
                 .add(ModBlocks.ELECTRIC_FURNACE.get())
-                .add(ModBlocks.SOLAR_PANEL.get());
+                .add(ModBlocks.SOLAR_PANEL.get())
+                .add(ModBlocks.STEEL_BLOCK.get())
+                .add(ModBlocks.STEEL_SLAB.get())
+                .add(ModBlocks.STEEL_STAIRS.get())
+                .add(ModBlocks.STEEL_WALL.get())
+                .add(ModBlocks.STEEL_FENCE.get())
+                .add(ModBlocks.STEEL_FENCE_GATE.get())
+                .add(ModBlocks.STEEL_PRESSURE_PLATE.get())
+                .add(ModBlocks.REINFORCED_COPPER_STEEL.get())
+                .add(ModBlocks.REINFORCED_GOLD_STEEL.get())
+                .add(ModBlocks.REINFORCED_REDSTONE_STEEL.get())
+                .add(ModBlocks.REINFORCED_DIAMOND_STEEL.get())
+                .add(ModBlocks.REINFORCED_NETHERITE_STEEL.get());
+
+        tag(BlockTags.SLABS)
+                .add(ModBlocks.STEEL_SLAB.get());
+
+        tag(BlockTags.STAIRS)
+                .add(ModBlocks.STEEL_STAIRS.get());
+
+        tag(BlockTags.WALLS)
+                .add(ModBlocks.STEEL_WALL.get());
+
+        tag(BlockTags.FENCES)
+                .add(ModBlocks.STEEL_FENCE.get());
+
+        tag(BlockTags.FENCE_GATES)
+                .add(ModBlocks.STEEL_FENCE_GATE.get());
+
+        tag(BlockTags.PRESSURE_PLATES)
+                .add(ModBlocks.STEEL_PRESSURE_PLATE.get());
     }
 }

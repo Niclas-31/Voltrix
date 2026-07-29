@@ -33,7 +33,7 @@ public class FuelGeneratorScreen extends AbstractContainerScreen<FuelGeneratorMe
         int progress = menu.getBurnProgress();
 
         if (progress > 0) {
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIT_PROGRESS, 14, 14, 0, 14 - progress, x + 81, y + 36 + (14 - progress), 14, progress);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, LIT_PROGRESS, 14, 14, 0, 14 - progress, x + 81, y + 54 + (14 - progress), 14, progress);
         }
 
         int batteryX = x + 150;

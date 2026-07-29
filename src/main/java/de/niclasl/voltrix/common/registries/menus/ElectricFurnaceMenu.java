@@ -1,5 +1,6 @@
 package de.niclasl.voltrix.common.registries.menus;
 
+import de.niclasl.voltrix.common.registries.menus.slot.ElectricFurnaceResultSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.recipebook.ServerPlaceRecipe;
 import net.minecraft.server.level.ServerLevel;
@@ -40,7 +41,7 @@ public class ElectricFurnaceMenu extends RecipeBookMenu {
         this.acceptedInputs = level.recipeAccess().propertySet(RecipePropertySet.FURNACE_INPUT);
 
         this.addSlot(new Slot(container, 0, 56, 35));
-        this.addSlot(new FurnaceResultSlot(inventory.player, container, 1, 116, 35));
+        this.addSlot(new ElectricFurnaceResultSlot(inventory.player, container, 1, 116, 35));
         this.addStandardInventorySlots(inventory, 8, 84);
         this.addDataSlots(data);
     }

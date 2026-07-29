@@ -1,6 +1,8 @@
 package de.niclasl.voltrix.common.network;
 
 import de.niclasl.voltrix.Voltrix;
+import de.niclasl.voltrix.common.network.message.PlayerSync;
+import de.niclasl.voltrix.common.network.message.SavedDataSync;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
@@ -10,15 +12,15 @@ public class ModMessage {
         PayloadRegistrar registrar = event.registrar(Voltrix.MOD_ID);
 
         registrar.playToClient(
-                ModVariables.SavedDataSync.TYPE,
-                ModVariables.SavedDataSync.STREAM_CODEC,
-                ModVariables.SavedDataSync::handle
+                SavedDataSync.TYPE,
+                SavedDataSync.STREAM_CODEC,
+                SavedDataSync::handle
         );
 
         registrar.playToClient(
-                ModVariables.PlayerSync.TYPE,
-                ModVariables.PlayerSync.STREAM_CODEC,
-                ModVariables.PlayerSync::handle
+                PlayerSync.TYPE,
+                PlayerSync.STREAM_CODEC,
+                PlayerSync::handle
         );
     }
 }

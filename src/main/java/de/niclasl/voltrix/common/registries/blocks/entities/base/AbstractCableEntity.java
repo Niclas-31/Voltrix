@@ -1,11 +1,13 @@
 package de.niclasl.voltrix.common.registries.blocks.entities.base;
 
+import com.mojang.serialization.Codec;
+import de.niclasl.voltrix.common.registries.damage_types.VoltrixDamageSources;
 import de.niclasl.voltrix_api.energy.ConnectionMode;
 import de.niclasl.voltrix_api.energy.ElectricalProperties;
 import de.niclasl.voltrix_api.energy.IEnergyCable;
-import de.niclasl.voltrix.common.registries.damage_types.VoltrixDamageSources;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import org.jspecify.annotations.NonNull;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -58,21 +61,80 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
         }
 
         setChanged();
+        sync();
+    }
+
+    @Override
+    protected ConnectionMode getDefaultConnection(Direction direction) {
+        return ConnectionMode.BOTH;
+    }
+
+    @Override
+    public List<Component> getEnergyInfo() {
+        List<Component> info = new ArrayList<>(super.getEnergyInfo());
+
+        info.add(Component.literal("Cable Loss: " + getElectricalProperties().cableLoss() + " V"));
+
+        info.add(Component.literal("Transfer Rate: " + getElectricalProperties().transferRate() + " FE/t"));
+
+        info.add(Component.literal("Insulation: " + (insulation.isEmpty() ? "None"
+                : insulation.getHoverName().getString())));
+
+        List<String> powered = new ArrayList<>();
+
+        for (Direction direction : Direction.values()) {
+            if (poweredSides.getOrDefault(direction, false)) {
+                powered.add(direction.name());
+            }
+        }
+
+        if (!powered.isEmpty()) {
+            info.add(Component.literal("Powered Sides:"));
+
+            for (String side : powered) {
+                info.add(Component.literal("  " + side));
+            }
+        }
+
+        return info;
+    }
+
+    @Override
+    public void handleUpdateTag(@NonNull ValueInput input) {
+        super.handleUpdateTag(input);
+
+        input.read(
+                "poweredSides",
+                Codec.unboundedMap(Direction.CODEC, Codec.BOOL)
+        ).ifPresent(poweredSides::putAll);
+
+        this.insulation = input.read("insulation", ItemStack.CODEC).orElse(ItemStack.EMPTY);
     }
 
     @Override
     protected void loadAdditional(@NonNull ValueInput input) {
         super.loadAdditional(input);
 
-        this.insulation = input.read("insulatedStack", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+        input.read(
+                "poweredSides",
+                Codec.unboundedMap(Direction.CODEC, Codec.BOOL)
+        ).ifPresent(poweredSides::putAll);
+
+        this.insulation = input.read("insulation", ItemStack.CODEC).orElse(ItemStack.EMPTY);
     }
 
     @Override
     protected void saveAdditional(@NonNull ValueOutput output) {
         super.saveAdditional(output);
 
+        output.store(
+                "poweredSides",
+                Codec.unboundedMap(Direction.CODEC, Codec.BOOL),
+                this.poweredSides
+        );
+
         if (!this.insulation.isEmpty()) {
-            output.store("insulatedStack", ItemStack.CODEC, this.insulation);
+            output.store("insulation", ItemStack.CODEC, this.insulation);
         }
     }
 
@@ -232,14 +294,16 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
         }
 
         setChanged();
+        sync();
     }
 
     public void setPowered(boolean powered) {
         for (Direction direction : Direction.values()) {
             poweredSides.put(direction, powered);
-
-            setChanged();
         }
+
+        setChanged();
+        sync();
     }
 
     public abstract void updateConnections(Level level, BlockPos pos, BlockState state);

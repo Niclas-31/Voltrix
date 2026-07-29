@@ -21,6 +21,18 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.FUEL_GENERATOR.get());
         dropSelf(ModBlocks.ELECTRIC_FURNACE.get());
         dropSelf(ModBlocks.SOLAR_PANEL.get());
+        dropSelf(ModBlocks.STEEL_BLOCK.get());
+        dropSelf(ModBlocks.STEEL_SLAB.get());
+        dropSelf(ModBlocks.STEEL_STAIRS.get());
+        dropSelf(ModBlocks.STEEL_WALL.get());
+        dropSelf(ModBlocks.STEEL_FENCE.get());
+        dropSelf(ModBlocks.STEEL_FENCE_GATE.get());
+        dropSelf(ModBlocks.STEEL_PRESSURE_PLATE.get());
+        dropSelf(ModBlocks.REINFORCED_COPPER_STEEL.get());
+        dropSelf(ModBlocks.REINFORCED_GOLD_STEEL.get());
+        dropSelf(ModBlocks.REINFORCED_REDSTONE_STEEL.get());
+        dropSelf(ModBlocks.REINFORCED_DIAMOND_STEEL.get());
+        dropSelf(ModBlocks.REINFORCED_NETHERITE_STEEL.get());
     }
 
     @Override

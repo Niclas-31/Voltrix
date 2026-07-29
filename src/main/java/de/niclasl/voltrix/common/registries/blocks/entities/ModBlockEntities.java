@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class ModBlockEntities {
@@ -31,7 +32,8 @@ public class ModBlockEntities {
 
     public static final Supplier<BlockEntityType<SolarPanelEntity>> SOLAR_PANEL =
             BLOCK_ENTITIES.register("solar_panel", () -> new BlockEntityType<>(
-                    SolarPanelEntity::new, ModBlocks.SOLAR_PANEL.get()));
+                    SolarPanelEntity::new,
+                    Set.of(ModBlocks.SOLAR_PANEL.get())));
 
     public static void register(IEventBus bus) {
         BLOCK_ENTITIES.register(bus);

@@ -1,13 +1,16 @@
 package de.niclasl.voltrix.common.registries.blocks.entities.producer;
 
 import de.niclasl.voltrix.common.core.EnergyNetworkManager;
+import de.niclasl.voltrix.common.registries.blocks.custom.producer.FuelGenerator;
 import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
 import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractProducerEntity;
 import de.niclasl.voltrix.common.registries.menus.FuelGeneratorMenu;
 import de.niclasl.voltrix_api.energy.AmperageTier;
+import de.niclasl.voltrix_api.energy.ConnectionMode;
 import de.niclasl.voltrix_api.energy.ElectricalProperties;
 import de.niclasl.voltrix_api.energy.VoltageTier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -22,10 +25,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FuelGeneratorEntity extends AbstractProducerEntity implements Container, MenuProvider {
     private static final ElectricalProperties PROPERTIES =
@@ -67,12 +74,20 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
     }
 
     @Override
+    public void handleUpdateTag(@NonNull ValueInput input) {
+        super.handleUpdateTag(input);
+
+        this.burnTime = input.getIntOr("burnTime", 0);
+        this.maxBurnTime = input.getIntOr("maxBurnTime", 0);
+    }
+
+    @Override
     protected void loadAdditional(@NonNull ValueInput input) {
         super.loadAdditional(input);
 
         ContainerHelper.loadAllItems(input, this.items);
-        burnTime = input.getIntOr("burnTime", 0);
-        maxBurnTime = input.getIntOr("maxBurnTime", 0);
+        this.burnTime = input.getIntOr("burnTime", 0);
+        this.maxBurnTime = input.getIntOr("maxBurnTime", 0);
     }
 
     @Override
@@ -80,8 +95,35 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
         super.saveAdditional(output);
 
         ContainerHelper.saveAllItems(output, this.items);
-        output.putInt("burnTime", burnTime);
-        output.putInt("maxBurnTime", maxBurnTime);
+        output.putInt("burnTime", this.burnTime);
+        output.putInt("maxBurnTime", this.maxBurnTime);
+    }
+
+    @Override
+    protected ConnectionMode getDefaultConnection(Direction direction) {
+        Direction back = getBlockState().getValue(FuelGenerator.FACING).getOpposite();
+
+        if (direction == back) {
+            return ConnectionMode.OUTPUT;
+        }
+
+        return ConnectionMode.NONE;
+    }
+
+    @Override
+    public List<Component> getEnergyInfo() {
+        List<Component> info = new ArrayList<>(super.getEnergyInfo());
+
+        info.add(Component.literal("Burn Time: " + this.burnTime));
+        info.add(Component.literal("Max Burn Time: " + this.maxBurnTime));
+
+        return info;
+    }
+
+    @Override
+    public boolean canChangeConnection(Direction direction) {
+        Direction back = getBlockState().getValue(FuelGenerator.FACING).getOpposite();
+        return direction == back;
     }
 
     @Override
@@ -102,22 +144,33 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
         }
     }
 
-    public static void tick(Level level, FuelGeneratorEntity entity) {
-        if (level.isClientSide()) {
+    @Override
+    public void serverTick(Level level) {
+        if (level == null || level.isClientSide()) {
             return;
         }
 
-        if (entity.burnTime > 0) {
-            entity.burnTime--;
+        if (this.burnTime > 0) {
+            this.burnTime--;
 
-            if (entity.storage.getEnergyStored() < entity.storage.getCapacity()) {
-                entity.storage.receiveEnergy(entity.produceEnergy(), false);
+            if (storage.getEnergyStored() < storage.getCapacity()) {
+                storage.receiveEnergy(produceEnergy(), false);
             }
         } else {
-            entity.consumeFuel();
+            if (storage.getEnergyStored() < storage.getCapacity()) {
+                consumeFuel();
+            }
         }
 
-        entity.setChanged();
+        boolean lit = this.burnTime > 0;
+        BlockState state = getBlockState();
+
+        if (state.getValue(BlockStateProperties.LIT) != lit) {
+            level.setBlock(worldPosition, state.setValue(BlockStateProperties.LIT, lit), 3);
+        }
+
+        setChanged();
+        sync();
     }
 
     private void consumeFuel() {
@@ -133,8 +186,8 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
             return;
         }
 
-        burnTime = burn;
-        maxBurnTime = burn;
+        this.burnTime = burn;
+        this.maxBurnTime = burn;
 
         ItemStackTemplate remainder = stack.getCraftingRemainder();
 

@@ -5,6 +5,7 @@ import de.niclasl.voltrix.common.registries.components.ModDataComponents;
 import de.niclasl.voltrix.common.registries.components.WrenchState;
 import de.niclasl.voltrix.common.registries.items.custom.WrenchItem;
 import de.niclasl.voltrix.extensions.ModExtensions;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -19,6 +20,16 @@ public class ModItems {
             (properties) -> new WrenchItem(properties.stacksTo(1)
                     .component(ModDataComponents.WRENCH_STATE, WrenchState.EMPTY)
                     .rarity(ModExtensions.LEGENDARY.getValue())));
+
+    public static final DeferredItem<Item> STEEL_INGOT = ITEMS.registerItem(
+            "steel_ingot",
+            Item::new
+    );
+
+    public static final DeferredItem<Item> ENERGY_GOGGLES = ITEMS.registerItem(
+            "energy_goggles",
+            (properties) -> new Item(properties.equippable(EquipmentSlot.HEAD))
+    );
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

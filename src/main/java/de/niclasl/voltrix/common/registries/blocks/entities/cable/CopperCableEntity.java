@@ -20,11 +20,12 @@ public class CopperCableEntity extends AbstractCableEntity {
             ElectricalProperties.cable(VoltageTier.MV, AmperageTier.A4, 0.01, 1024);
 
     public CopperCableEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.COPPER_CABLE.get(), pos, blockState, 300, PROPERTIES);
+        super(ModBlockEntities.COPPER_CABLE.get(), pos, blockState, 0, PROPERTIES);
     }
 
     @Override
     public void updateConnections(Level level, BlockPos pos, BlockState state) {
+        clearPoweredSides();
         CopperCable cable = (CopperCable)state.getBlock();
 
         BlockState newState = state
@@ -42,6 +43,7 @@ public class CopperCableEntity extends AbstractCableEntity {
         level.setBlock(pos, newState, Block.UPDATE_ALL);
         level.sendBlockUpdated(pos, state, newState, Block.UPDATE_ALL);
         setChanged();
+        sync();
     }
 
     @Override

@@ -29,6 +29,8 @@ public class EnergyTransferEngine {
 
         long transferRate = Long.MAX_VALUE;
 
+        producer.sync();
+
         for (BlockPos pos : path.cables()) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
 
@@ -45,8 +47,12 @@ public class EnergyTransferEngine {
                 amperage = Math.min(amperage, cableProperties.inputAmperageValue());
 
                 transferRate = Math.min(transferRate, cableProperties.transferRate());
+
+                cable.sync();
             }
         }
+
+        consumer.sync();
 
         if (voltage <= 0) {
             return;
