@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:coal",
+    "I": "minecraft:iron_ingot"
+  },
+  "pattern": [
+    "ICI",
+    "CIC",
+    "ICI"
+  ],
+  "result": {
+    "count": 4,
+    "id": "voltrix:steel_ingot"
+  }
+}

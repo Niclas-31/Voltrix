@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "voltrix:block/reinforced_copper_steel"
+    }
+  }
+}

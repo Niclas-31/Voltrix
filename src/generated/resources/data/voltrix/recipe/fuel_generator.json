@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "C": "voltrix:copper_cable",
+    "O": "minecraft:furnace",
+    "R": "minecraft:redstone",
+    "S": "voltrix:steel_ingot"
+  },
+  "pattern": [
+    "SSS",
+    "SOS",
+    "CRC"
+  ],
+  "result": {
+    "id": "voltrix:fuel_generator"
+  }
+}

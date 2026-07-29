@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "steel",
+  "key": {
+    "I": "voltrix:steel_ingot"
+  },
+  "pattern": [
+    "II"
+  ],
+  "result": {
+    "id": "voltrix:steel_pressure_plate"
+  }
+}
