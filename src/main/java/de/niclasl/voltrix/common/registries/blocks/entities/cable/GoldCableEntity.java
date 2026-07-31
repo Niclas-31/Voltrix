@@ -8,12 +8,11 @@ import de.niclasl.voltrix_api.energy.VoltageTier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class CopperCableEntity extends AbstractCableEntity {
-
+public class GoldCableEntity extends AbstractCableEntity {
     private static final ElectricalProperties PROPERTIES =
-            ElectricalProperties.cable(VoltageTier.LV, AmperageTier.A2, 0.01, 128);
+            ElectricalProperties.cable(VoltageTier.HV, AmperageTier.A8, 0.005, 512);
 
-    public CopperCableEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.COPPER_CABLE.get(), pos, blockState, 0, PROPERTIES);
+    public GoldCableEntity(BlockPos pos, BlockState blockState) {
+        super(ModBlockEntities.GOLD_CABLE.get(), pos, blockState, 0, PROPERTIES);
     }
 }

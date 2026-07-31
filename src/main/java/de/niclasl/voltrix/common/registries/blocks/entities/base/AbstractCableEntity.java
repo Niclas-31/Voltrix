@@ -1,10 +1,13 @@
 package de.niclasl.voltrix.common.registries.blocks.entities.base;
 
 import com.mojang.serialization.Codec;
+import de.niclasl.voltrix.common.registries.blocks.custom.base.AbstractCableBlock;
+import de.niclasl.voltrix.common.registries.blocks.custom.cable.CopperCable;
 import de.niclasl.voltrix.common.registries.damage_types.VoltrixDamageSources;
 import de.niclasl.voltrix_api.energy.ConnectionMode;
 import de.niclasl.voltrix_api.energy.ElectricalProperties;
 import de.niclasl.voltrix_api.energy.IEnergyCable;
+import de.niclasl.voltrix_api.energy.IEnergyTransmission;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -12,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,10 +28,14 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-public abstract class AbstractCableEntity extends AbstractEnergyEntity implements IEnergyCable {
+public abstract class AbstractCableEntity extends AbstractEnergyEntity implements IEnergyCable, IEnergyTransmission {
+
     private final EnumMap<Direction, Boolean> poweredSides = new EnumMap<>(Direction.class);
     private int shockTimer;
     private ItemStack insulation = ItemStack.EMPTY;
+
+    private long lastPowerTick = -1;
+    private boolean poweredThisTick = false;
 
     private static final double MIN = 0.375;
     private static final double MAX = 0.625;
@@ -41,8 +49,65 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
         }
     }
 
-    public boolean isPowered(Direction direction) {
-        return poweredSides.getOrDefault(direction, false);
+    public boolean isPowered(Direction dir) {
+        return poweredSides.getOrDefault(dir, false);
+    }
+
+    public void clearPoweredSides() {
+        boolean changed = false;
+
+        for (Direction direction : Direction.values()) {
+
+            if (poweredSides.get(direction)) {
+                poweredSides.put(direction, false);
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            setChanged();
+            sync();
+        }
+    }
+
+    public void markPowered(ServerLevel level, Direction direction) {
+        poweredSides.put(direction, true);
+        this.lastPowerTick = level.getGameTime();
+
+        setChanged();
+        sync();
+    }
+
+    @Override
+    protected void loadAdditional(@NonNull ValueInput input) {
+        super.loadAdditional(input);
+
+        input.read(
+                "poweredSides",
+                Codec.unboundedMap(Direction.CODEC, Codec.BOOL)
+        ).ifPresent(poweredSides::putAll);
+
+        this.insulation = input.read("insulation", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+    }
+
+    @Override
+    protected void saveAdditional(@NonNull ValueOutput output) {
+        super.saveAdditional(output);
+
+        output.store(
+                "poweredSides",
+                Codec.unboundedMap(Direction.CODEC, Codec.BOOL),
+                this.poweredSides
+        );
+
+        if (!this.insulation.isEmpty()) {
+            output.store("insulation", ItemStack.CODEC, this.insulation);
+        }
+    }
+
+    @Override
+    public void handleUpdateTag(@NonNull ValueInput input) {
+        loadAdditional(input);
     }
 
     public boolean isInsulated() {
@@ -99,47 +164,21 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
         return info;
     }
 
-    @Override
-    public void handleUpdateTag(@NonNull ValueInput input) {
-        super.handleUpdateTag(input);
-
-        input.read(
-                "poweredSides",
-                Codec.unboundedMap(Direction.CODEC, Codec.BOOL)
-        ).ifPresent(poweredSides::putAll);
-
-        this.insulation = input.read("insulation", ItemStack.CODEC).orElse(ItemStack.EMPTY);
-    }
-
-    @Override
-    protected void loadAdditional(@NonNull ValueInput input) {
-        super.loadAdditional(input);
-
-        input.read(
-                "poweredSides",
-                Codec.unboundedMap(Direction.CODEC, Codec.BOOL)
-        ).ifPresent(poweredSides::putAll);
-
-        this.insulation = input.read("insulation", ItemStack.CODEC).orElse(ItemStack.EMPTY);
-    }
-
-    @Override
-    protected void saveAdditional(@NonNull ValueOutput output) {
-        super.saveAdditional(output);
-
-        output.store(
-                "poweredSides",
-                Codec.unboundedMap(Direction.CODEC, Codec.BOOL),
-                this.poweredSides
-        );
-
-        if (!this.insulation.isEmpty()) {
-            output.store("insulation", ItemStack.CODEC, this.insulation);
-        }
-    }
-
     public static void serverTick(Level level, AbstractCableEntity cable) {
-        if (level.isClientSide()) return;
+        if (level.isClientSide()) {
+            return;
+        }
+
+        long currentTick = level.getGameTime();
+
+        if (!cable.poweredThisTick && cable.lastPowerTick != currentTick) {
+
+            if (cable.poweredSides.values().stream().anyMatch(Boolean::booleanValue)) {
+                cable.clearPoweredSides();
+            }
+        }
+
+        cable.poweredThisTick = false;
 
         cable.shockTimer++;
 
@@ -288,23 +327,25 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
         );
     }
 
-    public void clearPoweredSides() {
-        for (Direction direction : Direction.values()) {
-            poweredSides.put(direction, false);
+    public void updateConnections(Level level, BlockPos pos, BlockState state) {
+        clearPoweredSides();
+        AbstractCableBlock cable = (AbstractCableBlock) state.getBlock();
+
+        BlockState newState = state
+                .setValue(CopperCable.NORTH, cable.getVisual(level, pos, Direction.NORTH))
+                .setValue(CopperCable.SOUTH, cable.getVisual(level, pos, Direction.SOUTH))
+                .setValue(CopperCable.EAST, cable.getVisual(level, pos, Direction.EAST))
+                .setValue(CopperCable.WEST, cable.getVisual(level, pos, Direction.WEST))
+                .setValue(CopperCable.UP, cable.getVisual(level, pos, Direction.UP))
+                .setValue(CopperCable.DOWN, cable.getVisual(level, pos, Direction.DOWN));
+
+        if (state.equals(newState)) {
+            return;
         }
 
+        level.setBlock(pos, newState, Block.UPDATE_ALL);
+        level.sendBlockUpdated(pos, state, newState, Block.UPDATE_ALL);
         setChanged();
         sync();
     }
-
-    public void setPowered(boolean powered) {
-        for (Direction direction : Direction.values()) {
-            poweredSides.put(direction, powered);
-        }
-
-        setChanged();
-        sync();
-    }
-
-    public abstract void updateConnections(Level level, BlockPos pos, BlockState state);
 }

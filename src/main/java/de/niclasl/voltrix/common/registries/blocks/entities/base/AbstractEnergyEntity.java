@@ -1,6 +1,8 @@
 package de.niclasl.voltrix.common.registries.blocks.entities.base;
 
 import com.mojang.serialization.Codec;
+import de.niclasl.voltrix.common.core.EnergyNetworkManager;
+import de.niclasl.voltrix.common.core.network.EnergyNetworkImpl;
 import de.niclasl.voltrix_api.VoltrixAPI;
 import de.niclasl.voltrix_api.energy.*;
 import net.minecraft.core.BlockPos;
@@ -29,6 +31,7 @@ public abstract class AbstractEnergyEntity extends BlockEntity implements IEnerg
     protected final IEnergyStorage storage;
     private final EnumMap<Direction, ConnectionMode> connections = new EnumMap<>(Direction.class);
     private final ElectricalProperties properties;
+    protected EnergyNetworkImpl network;
 
     protected AbstractEnergyEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, long capacity,
                                    ElectricalProperties properties) {
@@ -133,6 +136,24 @@ public abstract class AbstractEnergyEntity extends BlockEntity implements IEnerg
         info.addAll(getConnectionInfo());
 
         return info;
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+
+        if (level instanceof ServerLevel serverLevel) {
+            EnergyNetworkManager.onNodeAdded(serverLevel, worldPosition);
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+
+        if (level instanceof ServerLevel serverLevel) {
+            EnergyNetworkManager.onNodeRemoved(serverLevel, worldPosition);
+        }
     }
 
     @Override

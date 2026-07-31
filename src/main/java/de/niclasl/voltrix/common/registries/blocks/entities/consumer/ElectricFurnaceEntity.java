@@ -2,7 +2,6 @@ package de.niclasl.voltrix.common.registries.blocks.entities.consumer;
 
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
-import de.niclasl.voltrix.common.core.EnergyNetworkManager;
 import de.niclasl.voltrix.common.registries.blocks.custom.consumer.ElectricFurnace;
 import de.niclasl.voltrix.common.registries.blocks.custom.producer.FuelGenerator;
 import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
@@ -97,24 +96,6 @@ public class ElectricFurnaceEntity extends AbstractMachineEntity implements Cont
     @Override
     public boolean canPlaceItem(int slot, @NonNull ItemStack itemStack) {
         return slot != 1;
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-
-        if (level != null && !level.isClientSide() && level instanceof ServerLevel serverLevel) {
-            EnergyNetworkManager.getNetwork(serverLevel).addNode(worldPosition);
-        }
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-
-        if (level instanceof ServerLevel serverLevel) {
-            EnergyNetworkManager.getNetwork(serverLevel).removeNode(worldPosition);
-        }
     }
 
     @Override

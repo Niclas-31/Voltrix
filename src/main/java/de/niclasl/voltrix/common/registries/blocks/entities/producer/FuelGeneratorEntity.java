@@ -1,6 +1,5 @@
 package de.niclasl.voltrix.common.registries.blocks.entities.producer;
 
-import de.niclasl.voltrix.common.core.EnergyNetworkManager;
 import de.niclasl.voltrix.common.registries.blocks.custom.producer.FuelGenerator;
 import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
 import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractProducerEntity;
@@ -13,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
@@ -124,24 +122,6 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
     public boolean canChangeConnection(Direction direction) {
         Direction back = getBlockState().getValue(FuelGenerator.FACING).getOpposite();
         return direction == back;
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-
-        if (level != null && !level.isClientSide() && level instanceof ServerLevel serverLevel) {
-            EnergyNetworkManager.getNetwork(serverLevel).addNode(worldPosition);
-        }
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-
-        if (level instanceof ServerLevel serverLevel) {
-            EnergyNetworkManager.getNetwork(serverLevel).removeNode(worldPosition);
-        }
     }
 
     @Override

@@ -114,19 +114,6 @@ public abstract class AbstractCableBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected boolean isSignalSource(@NonNull BlockState state) {
-        return true;
-    }
-
-    @Override
-    protected int getSignal(@NonNull BlockState state, @NonNull BlockGetter level,
-                            @NonNull BlockPos pos, @NonNull Direction direction) {
-        if (!(level.getBlockEntity(pos) instanceof AbstractCableEntity cable)) return 0;
-
-        return cable.isPowered(direction.getOpposite()) ? 15 : 0;
-    }
-
-    @Override
     protected @NonNull VoxelShape getCollisionShape(
             @NonNull BlockState state,
             @NonNull BlockGetter level,

@@ -42,7 +42,7 @@ public class FuelGenerator extends BaseEntityBlock {
     }
 
     @Override
-    protected @NonNull MapCodec<? extends BaseEntityBlock> codec() {
+    protected @NonNull MapCodec<FuelGenerator> codec() {
         return CODEC;
     }
 

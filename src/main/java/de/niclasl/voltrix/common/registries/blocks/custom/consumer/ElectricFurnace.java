@@ -90,7 +90,7 @@ public class ElectricFurnace extends BaseEntityBlock {
     }
 
     @Override
-    protected @NonNull MapCodec<? extends BaseEntityBlock> codec() {
+    protected @NonNull MapCodec<ElectricFurnace> codec() {
         return CODEC;
     }
 

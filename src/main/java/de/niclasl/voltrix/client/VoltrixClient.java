@@ -1,8 +1,10 @@
 package de.niclasl.voltrix.client;
 
 import de.niclasl.voltrix.Voltrix;
+import de.niclasl.voltrix.client.renderer.block.EnergyMeterRenderer;
 import de.niclasl.voltrix.client.screen.ElectricFurnaceScreen;
 import de.niclasl.voltrix.client.screen.FuelGeneratorScreen;
+import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
 import de.niclasl.voltrix.common.registries.menus.ModMenuTypes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -23,6 +25,7 @@ public class VoltrixClient {
 
     @SubscribeEvent
     public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(ModBlockEntities.ENERGY_METER.get(), EnergyMeterRenderer::new);
     }
 
     @SubscribeEvent
