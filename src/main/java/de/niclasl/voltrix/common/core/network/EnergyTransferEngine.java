@@ -1,69 +1,117 @@
 package de.niclasl.voltrix.common.core.network;
 
 import de.niclasl.voltrix.Voltrix;
-import de.niclasl.voltrix_api.energy.ElectricalProperties;
-import de.niclasl.voltrix_api.energy.IEnergyConsumer;
-import de.niclasl.voltrix_api.energy.IEnergyProducer;
+import de.niclasl.voltrix_api.energy.*;
 import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractCableEntity;
-import de.niclasl.voltrix_api.energy.NetworkPath;
+import de.niclasl.voltrix_api.energy.flow.CableFlow;
+import de.niclasl.voltrix_api.energy.state.PowerState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EnergyTransferEngine {
 
-    public void transfer(ServerLevel level, IEnergyProducer producer, NetworkPath path) {
+    public void transfer(ServerLevel level, NetworkPath path) {
+        BlockEntity target = level.getBlockEntity(path.consumer());
 
-        BlockEntity be = level.getBlockEntity(path.consumer());
-
-        if (!(be instanceof IEnergyConsumer consumer)) {
+        if (!(target instanceof IEnergyConsumer consumer)) {
             return;
         }
 
-        ElectricalProperties producerProperties = producer.getElectricalProperties();
+        double voltage = 0;
+        int amperage = 0;
+
+        List<IEnergyProducer> producers = new ArrayList<>();
+
+        for (BlockPos pos : path.producers()) {
+
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+
+            if (!(blockEntity instanceof IEnergyProducer producer)) {
+                continue;
+            }
+
+            producers.add(producer);
+
+            long available = producer.getStorage().extractEnergy(Long.MAX_VALUE, true);
+
+            if (available <= 0) {
+                continue;
+            }
+
+            ElectricalProperties properties = producer.getElectricalProperties();
+
+            voltage = Math.max(
+                    voltage,
+                    properties.outputVoltageValue()
+            );
+
+            amperage += properties.outputAmperageValue();
+        }
+
+        if (producers.isEmpty()) {
+            return;
+        }
+
         ElectricalProperties consumerProperties = consumer.getElectricalProperties();
-
-        double voltage = producerProperties.outputVoltageValue();
-
-        int amperage = producerProperties.outputAmperageValue();
 
         long transferRate = Long.MAX_VALUE;
 
-        producer.sync();
+        boolean networkOverloaded = false;
 
-        for (BlockPos pos : path.cables()) {
+        for (CableFlow flow : path.cables()) {
+            BlockEntity blockEntity = level.getBlockEntity(flow.pos());
+
+            if (!(blockEntity instanceof AbstractCableEntity cable)) {
+                continue;
+            }
+
+            ElectricalProperties properties = cable.getElectricalProperties();
+
+            voltage -= properties.cableLoss();
+
+            if (voltage <= 0) {
+                return;
+            }
+
+            boolean overloaded =
+                    voltage > properties.inputVoltageValue()
+                            || amperage > properties.inputAmperageValue();
+
+            if (overloaded) {
+                networkOverloaded = true;
+
+                Voltrix.LOGGER.warn(
+                        "Cable overload {} -> {}V {}A (Max {}V {}A)",
+                        flow.pos(),
+                        voltage,
+                        amperage,
+                        properties.inputVoltageValue(),
+                        properties.inputAmperageValue()
+                );
+            }
+
+            transferRate = Math.min(transferRate, properties.transferRate());
+        }
+
+        for (BlockPos pos : path.receivers()) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
 
-            if (blockEntity instanceof AbstractCableEntity cable) {
-                ElectricalProperties cableProperties = cable.getElectricalProperties();
-
-                voltage -= cableProperties.cableLoss();
-
-                if (voltage > cableProperties.inputVoltageValue()) {
-                    onCableOverVoltage(cable, voltage);
-                    return;
-                }
-
-                amperage = Math.min(amperage, cableProperties.inputAmperageValue());
-
-                transferRate = Math.min(transferRate, cableProperties.transferRate());
-
-                cable.sync();
+            if (blockEntity instanceof IPowerStateReceiver receiver) {
+                receiver.setPowerState(new PowerState((int) voltage, amperage, networkOverloaded));
             }
         }
 
-        consumer.sync();
-
-        if (voltage <= 0) {
+        if (networkOverloaded) {
             return;
         }
 
         if (voltage > consumerProperties.inputVoltageValue()) {
             onOverVoltage(consumer, voltage);
-            return;
-        }
-
-        if (amperage <= 0) {
             return;
         }
 
@@ -80,36 +128,44 @@ public class EnergyTransferEngine {
             return;
         }
 
-        long extracted = producer.getStorage().extractEnergy(energy, true);
-        long inserted = consumer.getStorage().receiveEnergy(extracted, true);
+        long remaining = energy;
 
-        long transferred = Math.min(extracted, inserted);
+        for (IEnergyProducer producer : producers) {
+            long extracted = producer.getStorage().extractEnergy(remaining, false);
 
-        if (transferred <= 0) {
+            remaining -= extracted;
+
+            producer.sync();
+
+            if (remaining <= 0) {
+                break;
+            }
+        }
+
+        long transferredEnergy = energy - remaining;
+
+        if (transferredEnergy <= 0) {
             return;
         }
 
-        producer.getStorage().extractEnergy(transferred, false);
-        consumer.getStorage().receiveEnergy(transferred, false);
+        long inserted = consumer.getStorage().receiveEnergy(transferredEnergy, false);
 
-        for (BlockPos pos : path.cables()) {
+        if (inserted <= 0) {
+            return;
+        }
 
-            BlockEntity blockEntity = level.getBlockEntity(pos);
+        consumer.sync();
+
+        for (CableFlow flow : path.cables()) {
+            BlockEntity blockEntity = level.getBlockEntity(flow.pos());
 
             if (blockEntity instanceof AbstractCableEntity cable) {
-                cable.setPowered(true);
+                for (Direction direction : flow.poweredSides()) {
+                    cable.markPowered(level, direction);
+                }
+                cable.sync();
             }
         }
-    }
-
-    private void onCableOverVoltage(AbstractCableEntity cable, double voltage) {
-        ElectricalProperties properties = cable.getElectricalProperties();
-
-        Voltrix.LOGGER.warn(
-                "Cable Over Voltage! Received: {}V Max: {}V",
-                voltage,
-                properties.inputVoltageValue()
-        );
     }
 
     private void onOverVoltage(IEnergyConsumer consumer, double voltage) {
