@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "voltrix:block/steel_block",
+    "east": "voltrix:block/steel_block",
+    "north": "voltrix:block/energy_meter_front",
+    "particle": "voltrix:block/energy_meter_front",
+    "south": "voltrix:block/steel_block",
+    "up": "voltrix:block/steel_block",
+    "west": "voltrix:block/steel_block"
+  }
+}

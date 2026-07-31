@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,overloaded=false": {
+      "model": "voltrix:block/energy_meter",
+      "y": 90
+    },
+    "facing=east,overloaded=true": {
+      "model": "voltrix:block/energy_meter_overloaded",
+      "y": 90
+    },
+    "facing=north,overloaded=false": {
+      "model": "voltrix:block/energy_meter"
+    },
+    "facing=north,overloaded=true": {
+      "model": "voltrix:block/energy_meter_overloaded"
+    },
+    "facing=south,overloaded=false": {
+      "model": "voltrix:block/energy_meter",
+      "y": 180
+    },
+    "facing=south,overloaded=true": {
+      "model": "voltrix:block/energy_meter_overloaded",
+      "y": 180
+    },
+    "facing=west,overloaded=false": {
+      "model": "voltrix:block/energy_meter",
+      "y": 270
+    },
+    "facing=west,overloaded=true": {
+      "model": "voltrix:block/energy_meter_overloaded",
+      "y": 270
+    }
+  }
+}
