@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
+  "group": "steel_ingot",
   "key": {
     "C": "minecraft:coal",
     "I": "minecraft:iron_ingot"

@@ -1,0 +1,115 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "voltrix:block/emerald_cable_dot"
+      }
+    },
+    {
+      "when": {
+        "east": "cable"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_horizontal"
+      }
+    },
+    {
+      "when": {
+        "east": "machine"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_horizontal_connect"
+      }
+    },
+    {
+      "when": {
+        "west": "cable"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_horizontal",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "machine"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_horizontal_connect",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "north": "cable"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_horizontal",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "north": "machine"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_horizontal_connect",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "south": "cable"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_horizontal",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "machine"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_horizontal_connect",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "up": "cable"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_vertical",
+        "z": 0
+      }
+    },
+    {
+      "when": {
+        "up": "machine"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_vertical_connect",
+        "z": 0
+      }
+    },
+    {
+      "when": {
+        "down": "cable"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_vertical",
+        "z": 180
+      }
+    },
+    {
+      "when": {
+        "down": "machine"
+      },
+      "apply": {
+        "model": "voltrix:block/emerald_cable_vertical_connect",
+        "z": 180
+      }
+    }
+  ]
+}

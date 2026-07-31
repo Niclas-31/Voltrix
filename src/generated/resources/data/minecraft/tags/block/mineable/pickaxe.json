@@ -1,6 +1,10 @@
 {
   "values": [
     "voltrix:copper_cable",
+    "voltrix:iron_cable",
+    "voltrix:gold_cable",
+    "voltrix:redstone_cable",
+    "voltrix:emerald_cable",
     "voltrix:fuel_generator",
     "voltrix:electric_furnace",
     "voltrix:solar_panel",
@@ -15,6 +19,7 @@
     "voltrix:reinforced_gold_steel",
     "voltrix:reinforced_redstone_steel",
     "voltrix:reinforced_diamond_steel",
-    "voltrix:reinforced_netherite_steel"
+    "voltrix:reinforced_netherite_steel",
+    "voltrix:energy_meter"
   ]
 }

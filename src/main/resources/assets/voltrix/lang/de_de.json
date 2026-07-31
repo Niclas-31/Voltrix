@@ -3,6 +3,10 @@
   "itemGroup.voltrix_building_blocks": "Voltrix Baublöcke",
 
   "block.voltrix.copper_cable": "Kupfer Kabel",
+  "block.voltrix.iron_cable": "Iron Kabel",
+  "block.voltrix.gold_cable": "Gold Kabel",
+  "block.voltrix.redstone_cable": "Redstone Kabel",
+  "block.voltrix.emerald_cable": "Smaragd Kabel",
   "block.voltrix.fuel_generator": "Kraftstoffgenerator",
   "block.voltrix.electric_furnace": "Elektrischer Ofen",
   "block.voltrix.solar_panel": "Solarmodul",
@@ -18,6 +22,7 @@
   "block.voltrix.reinforced_redstone_steel": "Verstärkter Redstone Stahl",
   "block.voltrix.reinforced_diamond_steel": "Verstärkter Diamant Stahl",
   "block.voltrix.reinforced_netherite_steel": "Verstärkter Netherit Stahl",
+  "block.voltrix.energy_meter": "Energiemesser",
 
   "item.voltrix.wrench": "Schraubenschlüssel",
   "item.voltrix.steel_ingot": "Stahlbarren",
