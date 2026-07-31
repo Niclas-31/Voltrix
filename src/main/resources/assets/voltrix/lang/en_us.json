@@ -7,6 +7,8 @@
   "block.voltrix.gold_cable": "Gold Cable",
   "block.voltrix.redstone_cable": "Redstone Cable",
   "block.voltrix.emerald_cable": "Emerald Cable",
+  "block.voltrix.diamond_cable": "Diamond Cable",
+  "block.voltrix.netherite_cable": "Netherite Cable",
   "block.voltrix.fuel_generator": "Fuel Generator",
   "block.voltrix.electric_furnace": "Electric Furnace",
   "block.voltrix.solar_panel": "Solar Panel",
