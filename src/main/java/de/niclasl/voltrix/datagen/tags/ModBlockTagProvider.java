@@ -19,6 +19,11 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     protected void addTags(HolderLookup.@NonNull Provider provider) {
         tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(ModBlocks.COPPER_CABLE.get())
+                .add(ModBlocks.IRON_CABLE.get())
+                .add(ModBlocks.GOLD_CABLE.get())
+                .add(ModBlocks.REDSTONE_CABLE.get())
+                .add(ModBlocks.EMERALD_CABLE.get())
+                .add(ModBlocks.DIAMOND_CABLE.get())
                 .add(ModBlocks.FUEL_GENERATOR.get())
                 .add(ModBlocks.ELECTRIC_FURNACE.get())
                 .add(ModBlocks.SOLAR_PANEL.get())
@@ -31,14 +36,22 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.STEEL_PRESSURE_PLATE.get())
                 .add(ModBlocks.REINFORCED_COPPER_STEEL.get())
                 .add(ModBlocks.REINFORCED_GOLD_STEEL.get())
-                .add(ModBlocks.REINFORCED_REDSTONE_STEEL.get());
+                .add(ModBlocks.REINFORCED_REDSTONE_STEEL.get())
+                .add(ModBlocks.ENERGY_METER.get());
 
         tag(BlockTags.NEEDS_DIAMOND_TOOL)
                 .add(ModBlocks.REINFORCED_DIAMOND_STEEL.get())
-                .add(ModBlocks.REINFORCED_NETHERITE_STEEL.get());
+                .add(ModBlocks.REINFORCED_NETHERITE_STEEL.get())
+                .add(ModBlocks.NETHERITE_CABLE.get());
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(ModBlocks.COPPER_CABLE.get())
+                .add(ModBlocks.IRON_CABLE.get())
+                .add(ModBlocks.GOLD_CABLE.get())
+                .add(ModBlocks.REDSTONE_CABLE.get())
+                .add(ModBlocks.EMERALD_CABLE.get())
+                .add(ModBlocks.DIAMOND_CABLE.get())
+                .add(ModBlocks.NETHERITE_CABLE.get())
                 .add(ModBlocks.FUEL_GENERATOR.get())
                 .add(ModBlocks.ELECTRIC_FURNACE.get())
                 .add(ModBlocks.SOLAR_PANEL.get())
@@ -53,7 +66,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.REINFORCED_GOLD_STEEL.get())
                 .add(ModBlocks.REINFORCED_REDSTONE_STEEL.get())
                 .add(ModBlocks.REINFORCED_DIAMOND_STEEL.get())
-                .add(ModBlocks.REINFORCED_NETHERITE_STEEL.get());
+                .add(ModBlocks.REINFORCED_NETHERITE_STEEL.get())
+                .add(ModBlocks.ENERGY_METER.get());
 
         tag(BlockTags.SLABS)
                 .add(ModBlocks.STEEL_SLAB.get());

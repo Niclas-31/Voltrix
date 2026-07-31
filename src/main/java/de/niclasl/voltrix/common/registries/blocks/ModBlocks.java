@@ -1,7 +1,8 @@
 package de.niclasl.voltrix.common.registries.blocks;
 
 import de.niclasl.voltrix.Voltrix;
-import de.niclasl.voltrix.common.registries.blocks.custom.cable.CopperCable;
+import de.niclasl.voltrix.common.registries.blocks.custom.cable.*;
+import de.niclasl.voltrix.common.registries.blocks.custom.transmission.EnergyMeter;
 import de.niclasl.voltrix.common.registries.blocks.custom.consumer.ElectricFurnace;
 import de.niclasl.voltrix.common.registries.blocks.custom.producer.FuelGenerator;
 import de.niclasl.voltrix.common.registries.blocks.custom.producer.SolarPanel;
@@ -30,6 +31,42 @@ public class ModBlocks {
     public static final DeferredBlock<Block> COPPER_CABLE = registerBlock("copper_cable",
             (properties) -> new CopperCable(
                     properties.strength(15f).sound(SoundType.COPPER)
+                            .requiresCorrectToolForDrops()),
+            ModExtensions.MYTHIC.getValue());
+
+    public static final DeferredBlock<Block> IRON_CABLE = registerBlock("iron_cable",
+            (properties) -> new IronCable(
+                    properties.strength(20f).sound(SoundType.IRON)
+                            .requiresCorrectToolForDrops()),
+            ModExtensions.MYTHIC.getValue());
+
+    public static final DeferredBlock<Block> GOLD_CABLE = registerBlock("gold_cable",
+            (properties) -> new GoldCable(
+                    properties.strength(25f).sound(SoundType.METAL)
+                            .requiresCorrectToolForDrops()),
+            ModExtensions.MYTHIC.getValue());
+
+    public static final DeferredBlock<Block> REDSTONE_CABLE = registerBlock("redstone_cable",
+            (properties) -> new RedstoneCable(
+                    properties.strength(30f).sound(SoundType.METAL)
+                            .requiresCorrectToolForDrops()),
+            ModExtensions.MYTHIC.getValue());
+
+    public static final DeferredBlock<Block> EMERALD_CABLE = registerBlock("emerald_cable",
+            (properties) -> new EmeraldCable(
+                    properties.strength(35f).sound(SoundType.METAL)
+                            .requiresCorrectToolForDrops()),
+            ModExtensions.MYTHIC.getValue());
+
+    public static final DeferredBlock<Block> DIAMOND_CABLE = registerBlock("diamond_cable",
+            (properties) -> new DiamondCable(
+                    properties.strength(40f).sound(SoundType.METAL)
+                            .requiresCorrectToolForDrops()),
+            ModExtensions.MYTHIC.getValue());
+
+    public static final DeferredBlock<Block> NETHERITE_CABLE = registerBlock("netherite_cable",
+            (properties) -> new NetheriteCable(
+                    properties.strength(45f).sound(SoundType.NETHERITE_BLOCK)
                             .requiresCorrectToolForDrops()),
             ModExtensions.MYTHIC.getValue());
 
@@ -113,6 +150,10 @@ public class ModBlocks {
             (properties) -> new Block(
                     properties.strength(30.0f, 60.0f).requiresCorrectToolForDrops()
                             .sound(SoundType.METAL)));
+
+    public static final DeferredBlock<Block> ENERGY_METER = registerBlock("energy_meter",
+            (properties) -> new EnergyMeter(
+                    properties.strength(10.0f, 25.0f).requiresCorrectToolForDrops()));
 
     private static ToIntFunction<BlockState> litBlockEmission(int lightValue) {
         return (p_50763_) -> (Boolean)p_50763_.getValue(BlockStateProperties.LIT) ? lightValue : 0;

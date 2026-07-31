@@ -3,6 +3,7 @@ package de.niclasl.voltrix.datagen;
 import de.niclasl.voltrix.Voltrix;
 import de.niclasl.voltrix.common.registries.blocks.ModBlocks;
 import de.niclasl.voltrix.common.registries.blocks.custom.producer.FuelGenerator;
+import de.niclasl.voltrix.common.registries.blocks.custom.transmission.EnergyMeter;
 import de.niclasl.voltrix.common.registries.items.ModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -41,8 +42,27 @@ public class ModModelProvider extends ModelProvider {
         blockModels.createTrivialCube(ModBlocks.REINFORCED_REDSTONE_STEEL.get());
         blockModels.createTrivialCube(ModBlocks.REINFORCED_DIAMOND_STEEL.get());
         blockModels.createTrivialCube(ModBlocks.REINFORCED_NETHERITE_STEEL.get());
+        createEnergyMeter(blockModels);
 
         itemModels.generateFlatItem(ModItems.STEEL_INGOT.get(), ModelTemplates.FLAT_ITEM);
+    }
+
+    private void createEnergyMeter(BlockModelGenerators bMG) {
+        Block block = ModBlocks.ENERGY_METER.get();
+        Block block1 = ModBlocks.STEEL_BLOCK.get();
+        TextureMapping textureMapping = energyMeterTextureMapping(block, block1, "_front");
+        TextureMapping textureMapping1 = energyMeterTextureMapping(block, block1, "_front_overloaded");
+        Identifier identifier = ModelTemplates.CUBE.create(block, textureMapping, bMG.modelOutput);
+        MultiVariant multiVariant = BlockModelGenerators.plainVariant(identifier);
+        MultiVariant multiVariant1 = BlockModelGenerators.plainVariant(ModelTemplates.CUBE.createWithSuffix(block, "_overloaded", textureMapping1, bMG.modelOutput));
+        bMG.blockStateOutput
+                .accept(
+                        MultiVariantGenerator.dispatch(block)
+                                .with(BlockModelGenerators.createBooleanModelDispatch(
+                                        EnergyMeter.OVERLOADED, multiVariant1, multiVariant)
+                                )
+                                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING)
+                );
     }
 
     private void createFuelGenerator(BlockModelGenerators bMG) {
@@ -63,7 +83,18 @@ public class ModModelProvider extends ModelProvider {
                 );
     }
 
-    private static TextureMapping fuelGeneratorTextureMapping(Block block, Block block1, String frontSuffix) {
+    private TextureMapping energyMeterTextureMapping(Block block, Block block1, String frontSuffix) {
+        return new TextureMapping()
+                .put(TextureSlot.PARTICLE, TextureMapping.getBlockTexture(block, frontSuffix))
+                .put(TextureSlot.UP, TextureMapping.getBlockTexture(block1))
+                .put(TextureSlot.DOWN, TextureMapping.getBlockTexture(block1))
+                .put(TextureSlot.NORTH, TextureMapping.getBlockTexture(block, frontSuffix))
+                .put(TextureSlot.SOUTH, TextureMapping.getBlockTexture(block1))
+                .put(TextureSlot.EAST, TextureMapping.getBlockTexture(block1))
+                .put(TextureSlot.WEST, TextureMapping.getBlockTexture(block1));
+    }
+
+    private TextureMapping fuelGeneratorTextureMapping(Block block, Block block1, String frontSuffix) {
         return new TextureMapping()
                 .put(TextureSlot.PARTICLE, TextureMapping.getBlockTexture(block, frontSuffix))
                 .put(TextureSlot.UP, TextureMapping.getBlockTexture(block1))
@@ -77,13 +108,19 @@ public class ModModelProvider extends ModelProvider {
     @Override
     protected @NonNull Stream<? extends Holder<Block>> getKnownBlocks() {
         return ModBlocks.BLOCKS.getEntries().stream().filter(x ->
-                x.get() != ModBlocks.COPPER_CABLE.get() && x.get() != ModBlocks.SOLAR_PANEL.get());
+                x.get() != ModBlocks.COPPER_CABLE.get() && x.get() != ModBlocks.IRON_CABLE.get()
+                        && x.get() != ModBlocks.GOLD_CABLE.get() && x.get() != ModBlocks.REDSTONE_CABLE.get()
+                        && x.get() != ModBlocks.EMERALD_CABLE.get() && x.get() != ModBlocks.DIAMOND_CABLE.get()
+                        && x.get() != ModBlocks.NETHERITE_CABLE.get() && x.get() != ModBlocks.SOLAR_PANEL.get());
     }
 
     @Override
     protected @NonNull Stream<? extends Holder<Item>> getKnownItems() {
         return ModItems.ITEMS.getEntries().stream().filter(x ->
-                x.get() != ModBlocks.COPPER_CABLE.asItem() && x.get() != ModItems.WRENCH.get()
+                x.get() != ModBlocks.COPPER_CABLE.asItem() && x.get() != ModBlocks.IRON_CABLE.asItem()
+                        && x.get() != ModBlocks.GOLD_CABLE.asItem() && x.get() != ModBlocks.REDSTONE_CABLE.asItem()
+                        && x.get() != ModBlocks.EMERALD_CABLE.asItem() && x.get() != ModBlocks.DIAMOND_CABLE.asItem()
+                        && x.get() != ModBlocks.NETHERITE_CABLE.asItem() && x.get() != ModItems.WRENCH.get()
                         && x.get() != ModBlocks.SOLAR_PANEL.asItem() && x.get() != ModItems.ENERGY_GOGGLES.get());
     }
 }

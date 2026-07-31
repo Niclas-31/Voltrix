@@ -7,7 +7,6 @@ import de.niclasl.voltrix.common.registries.blocks.entities.cable.GoldCableEntit
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -39,7 +38,7 @@ public class GoldCable extends AbstractCableBlock {
     }
 
     @Override
-    protected @NonNull MapCodec<? extends BaseEntityBlock> codec() {
+    protected @NonNull MapCodec<GoldCable> codec() {
         return CODEC;
     }
 }

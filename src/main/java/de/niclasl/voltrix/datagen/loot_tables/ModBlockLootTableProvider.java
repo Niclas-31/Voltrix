@@ -18,6 +18,12 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         dropSelf(ModBlocks.COPPER_CABLE.get());
+        dropSelf(ModBlocks.IRON_CABLE.get());
+        dropSelf(ModBlocks.GOLD_CABLE.get());
+        dropSelf(ModBlocks.REDSTONE_CABLE.get());
+        dropSelf(ModBlocks.EMERALD_CABLE.get());
+        dropSelf(ModBlocks.DIAMOND_CABLE.get());
+        dropSelf(ModBlocks.NETHERITE_CABLE.get());
         dropSelf(ModBlocks.FUEL_GENERATOR.get());
         dropSelf(ModBlocks.ELECTRIC_FURNACE.get());
         dropSelf(ModBlocks.SOLAR_PANEL.get());
@@ -33,6 +39,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.REINFORCED_REDSTONE_STEEL.get());
         dropSelf(ModBlocks.REINFORCED_DIAMOND_STEEL.get());
         dropSelf(ModBlocks.REINFORCED_NETHERITE_STEEL.get());
+        dropSelf(ModBlocks.ENERGY_METER.get());
     }
 
     @Override
