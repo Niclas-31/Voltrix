@@ -99,7 +99,7 @@
       },
       "apply": {
         "model": "voltrix:block/iron_cable",
-        "z": 90
+        "x": 90
       }
     },
     {
@@ -108,7 +108,7 @@
       },
       "apply": {
         "model": "voltrix:block/iron_cable_connect",
-        "z": 90
+        "x": 90
       }
     }
   ]

@@ -11,7 +11,7 @@
       },
       "apply": {
         "model": "voltrix:block/diamond_cable",
-        "Y": 90
+        "y": 90
       }
     },
     {
@@ -90,7 +90,7 @@
       },
       "apply": {
         "model": "voltrix:block/diamond_cable_connect",
-        "z": 270
+        "x": 270
       }
     },
     {

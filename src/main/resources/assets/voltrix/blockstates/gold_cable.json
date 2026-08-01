@@ -108,7 +108,7 @@
       },
       "apply": {
         "model": "voltrix:block/gold_cable_connect",
-        "z": 90
+        "x": 90
       }
     }
   ]

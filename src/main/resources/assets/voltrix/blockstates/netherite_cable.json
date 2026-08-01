@@ -99,7 +99,7 @@
       },
       "apply": {
         "model": "voltrix:block/netherite_cable",
-        "z": 90
+        "x": 90
       }
     },
     {
@@ -108,7 +108,7 @@
       },
       "apply": {
         "model": "voltrix:block/netherite_cable_connect",
-        "z": 90
+        "x": 90
       }
     }
   ]
