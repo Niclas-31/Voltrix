@@ -160,27 +160,23 @@ public class EnergyNetworkImpl implements IEnergyNetwork {
     private void buildPaths(ServerLevel level) {
         paths.clear();
 
-        for (BlockPos consumer : consumers) {
+        NetworkPath path = buildPath(level);
 
-            NetworkPath path = buildPath(level, consumer);
-
-            if (path != null) {
-                paths.add(path);
-            }
+        if (path != null) {
+            paths.add(path);
         }
     }
 
-    private NetworkPath buildPath(ServerLevel level, BlockPos consumer) {
+    private NetworkPath buildPath(ServerLevel level) {
 
+        Set<BlockPos> foundConsumers = new LinkedHashSet<>();
         Set<BlockPos> foundProducers = new LinkedHashSet<>();
         Set<CableFlow> foundCables = new LinkedHashSet<>();
         Set<BlockPos> foundTransmissions = new LinkedHashSet<>();
         Set<BlockPos> foundReceivers = new LinkedHashSet<>();
 
-        Queue<BlockPos> queue = new ArrayDeque<>();
+        Queue<BlockPos> queue = new ArrayDeque<>(consumers);
         Set<BlockPos> visited = new HashSet<>();
-
-        queue.add(consumer);
 
         while (!queue.isEmpty()) {
             BlockPos pos = queue.poll();
@@ -193,6 +189,10 @@ public class EnergyNetworkImpl implements IEnergyNetwork {
 
             if (!(entity instanceof IEnergyConnectable connectable)) {
                 continue;
+            }
+
+            if (entity instanceof IEnergyConsumer) {
+                foundConsumers.add(pos);
             }
 
             if (entity instanceof IEnergyProducer && !(entity instanceof IEnergyTransmission)) {
@@ -235,7 +235,6 @@ public class EnergyNetworkImpl implements IEnergyNetwork {
                     continue;
                 }
 
-
                 ConnectionMode nextMode = nextConnectable.getConnectionMode(direction.getOpposite());
 
                 if (!nextMode.canOutput()) {
@@ -251,7 +250,7 @@ public class EnergyNetworkImpl implements IEnergyNetwork {
         }
 
         return new NetworkPath(
-                consumer,
+                List.copyOf(foundConsumers),
                 List.copyOf(foundProducers),
                 List.copyOf(foundCables),
                 List.copyOf(foundTransmissions),

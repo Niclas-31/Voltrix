@@ -4,10 +4,8 @@ import com.mojang.serialization.Codec;
 import de.niclasl.voltrix.common.registries.blocks.custom.base.AbstractCableBlock;
 import de.niclasl.voltrix.common.registries.blocks.custom.cable.CopperCable;
 import de.niclasl.voltrix.common.registries.damage_types.VoltrixDamageSources;
-import de.niclasl.voltrix_api.energy.ConnectionMode;
-import de.niclasl.voltrix_api.energy.ElectricalProperties;
-import de.niclasl.voltrix_api.energy.IEnergyCable;
-import de.niclasl.voltrix_api.energy.IEnergyTransmission;
+import de.niclasl.voltrix_api.energy.*;
+import de.niclasl.voltrix_api.energy.state.PowerState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -28,11 +26,13 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-public abstract class AbstractCableEntity extends AbstractEnergyEntity implements IEnergyCable, IEnergyTransmission {
+public abstract class AbstractCableEntity extends AbstractEnergyEntity implements IEnergyCable, IEnergyTransmission, IPowerStateReceiver {
 
     private final EnumMap<Direction, Boolean> poweredSides = new EnumMap<>(Direction.class);
     private int shockTimer;
     private ItemStack insulation = ItemStack.EMPTY;
+
+    private PowerState powerState = PowerState.EMPTY;
 
     private long lastPowerTick = -1;
     private boolean poweredThisTick = false;
@@ -76,6 +76,18 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
 
         setChanged();
         sync();
+    }
+
+    @Override
+    public void setPowerState(PowerState powerState) {
+        this.powerState = powerState;
+        setChanged();
+        sync();
+    }
+
+    @Override
+    public PowerState getPowerState() {
+        return powerState;
     }
 
     @Override
@@ -215,8 +227,10 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
                 continue;
             }
 
-            int voltage = getElectricalProperties().outputVoltageValue();
-            int amperage = getElectricalProperties().outputAmperageValue();
+            PowerState state = getPowerState();
+
+            int voltage = state.voltage();
+            int amperage = state.amperage();
 
             if (voltage < 100 || amperage <= 0) {
                 continue;
@@ -226,7 +240,22 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
 
             BlockState neighborState = level.getBlockState(firePos);
 
-            if (neighborState.isFlammable(level, worldPosition, direction.getOpposite())) {
+            int power = voltage * amperage;
+
+            int chance;
+
+            if (power >= 100000) {
+                chance = 5;
+            } else if (power >= 10000) {
+                chance = 20;
+            } else if (power >= 1000) {
+                chance = 50;
+            } else {
+                chance = 100;
+            }
+
+            if (neighborState.isFlammable(level, worldPosition, direction.getOpposite())
+                    && level.getRandom().nextInt(chance) == 0) {
                 level.setBlockAndUpdate(firePos, Blocks.FIRE.defaultBlockState());
             }
 

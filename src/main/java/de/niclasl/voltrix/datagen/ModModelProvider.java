@@ -69,7 +69,7 @@ public class ModModelProvider extends ModelProvider {
         Block block = ModBlocks.FUEL_GENERATOR.get();
         Block block1 = ModBlocks.STEEL_BLOCK.get();
         TextureMapping textureMapping = fuelGeneratorTextureMapping(block, block1, "_front");
-        TextureMapping textureMapping1 = fuelGeneratorTextureMapping(block, block1, "_front_lit");
+        TextureMapping textureMapping1 = fuelGeneratorTextureMapping(block, block1, "_front_on");
         Identifier identifier = ModelTemplates.CUBE.create(block, textureMapping, bMG.modelOutput);
         MultiVariant multiVariant = BlockModelGenerators.plainVariant(identifier);
         MultiVariant multiVariant1 = BlockModelGenerators.plainVariant(ModelTemplates.CUBE.createWithSuffix(block, "_on", textureMapping1, bMG.modelOutput));

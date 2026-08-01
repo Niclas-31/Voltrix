@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "voltrix:solar_panel"
+          "name": "voltrix:basic_solar_panel"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "voltrix:blocks/solar_panel"
+  "random_sequence": "voltrix:blocks/basic_solar_panel"
 }

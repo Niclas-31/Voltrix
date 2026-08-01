@@ -13,7 +13,13 @@ import net.minecraft.world.level.block.state.BlockState;
 public class SolarPanelEntity extends AbstractProducerEntity {
 
     public SolarPanelEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.SOLAR_PANEL.get(), pos, blockState, 10000, getProperties(blockState));
+        super(ModBlockEntities.SOLAR_PANEL.get(), pos, blockState, getCapacity(blockState), getProperties(blockState));
+    }
+
+    private static long getCapacity(BlockState state) {
+        SolarPanel block = (SolarPanel) state.getBlock();
+
+        return block.getTier().capacity();
     }
 
     private static ElectricalProperties getProperties(BlockState state) {

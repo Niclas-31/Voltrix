@@ -3,8 +3,8 @@
   "textures": {
     "down": "voltrix:block/steel_block",
     "east": "voltrix:block/fuel_generator_side",
-    "north": "voltrix:block/fuel_generator_front_lit",
-    "particle": "voltrix:block/fuel_generator_front_lit",
+    "north": "voltrix:block/fuel_generator_front_on",
+    "particle": "voltrix:block/fuel_generator_front_on",
     "south": "voltrix:block/fuel_generator_back",
     "up": "voltrix:block/steel_block",
     "west": "voltrix:block/fuel_generator_side"

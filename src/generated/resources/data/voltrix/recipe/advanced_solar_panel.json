@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "B": "voltrix:solar_panel",
+    "B": "voltrix:basic_solar_panel",
     "G": "voltrix:gold_cable",
     "R": "voltrix:reinforced_gold_steel",
     "S": "minecraft:emerald"

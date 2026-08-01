@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.NonNull;
@@ -25,15 +26,28 @@ public class EnergyMeterEntity extends AbstractEnergyEntity implements IPowerSta
     }
 
     @Override
+    public boolean canChangeConnection(Direction direction) {
+        Direction front = getBlockState().getValue(BlockStateProperties.FACING);
+
+        return direction != front;
+    }
+
+    @Override
     protected ConnectionMode getDefaultConnection(Direction direction) {
         if (level == null) {
             return ConnectionMode.NONE;
         }
 
+        Direction front = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+
         BlockPos nextPos = worldPosition.relative(direction);
         BlockEntity nextEntity = level.getBlockEntity(nextPos);
 
         if (nextEntity instanceof AbstractCableEntity) {
+            if (direction == front) {
+                return ConnectionMode.NONE;
+            }
+
             return ConnectionMode.BOTH;
         } else {
             return ConnectionMode.NONE;

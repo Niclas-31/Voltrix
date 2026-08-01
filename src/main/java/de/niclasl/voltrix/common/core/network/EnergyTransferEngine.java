@@ -16,9 +16,17 @@ import java.util.List;
 public class EnergyTransferEngine {
 
     public void transfer(ServerLevel level, NetworkPath path) {
-        BlockEntity target = level.getBlockEntity(path.consumer());
+        List<IEnergyConsumer> consumers = new ArrayList<>();
 
-        if (!(target instanceof IEnergyConsumer consumer)) {
+        for (BlockPos pos : path.consumers()) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+
+            if (blockEntity instanceof IEnergyConsumer consumer) {
+                consumers.add(consumer);
+            }
+        }
+
+        if (consumers.isEmpty()) {
             return;
         }
 
@@ -56,8 +64,6 @@ public class EnergyTransferEngine {
         if (producers.isEmpty()) {
             return;
         }
-
-        ElectricalProperties consumerProperties = consumer.getElectricalProperties();
 
         long transferRate = Long.MAX_VALUE;
 
@@ -110,16 +116,6 @@ public class EnergyTransferEngine {
             return;
         }
 
-        if (voltage > consumerProperties.inputVoltageValue()) {
-            onOverVoltage(consumer, voltage);
-            return;
-        }
-
-        if (amperage > consumerProperties.inputAmperageValue()) {
-            onOverCurrent(consumer, amperage);
-            return;
-        }
-
         long energy = (long) voltage * amperage;
 
         energy = Math.min(energy, transferRate);
@@ -128,33 +124,50 @@ public class EnergyTransferEngine {
             return;
         }
 
-        long remaining = energy;
+        for (IEnergyConsumer consumer : consumers) {
 
-        for (IEnergyProducer producer : producers) {
-            long extracted = producer.getStorage().extractEnergy(remaining, false);
+            ElectricalProperties consumerProperties = consumer.getElectricalProperties();
 
-            remaining -= extracted;
-
-            producer.sync();
-
-            if (remaining <= 0) {
-                break;
+            if (voltage > consumerProperties.inputVoltageValue()) {
+                onOverVoltage(consumer, voltage);
+                continue;
             }
+
+            if (amperage > consumerProperties.inputAmperageValue()) {
+                onOverCurrent(consumer, amperage);
+                continue;
+            }
+
+            long accepted = consumer.getStorage().receiveEnergy(energy, true);
+
+            if (accepted <= 0) {
+                continue;
+            }
+
+            long remaining = accepted;
+
+            for (IEnergyProducer producer : producers) {
+
+                long extracted = producer.getStorage().extractEnergy(remaining, false);
+
+                remaining -= extracted;
+
+                producer.sync();
+
+                if (remaining <= 0) {
+                    break;
+                }
+            }
+
+            long transferredEnergy = accepted - remaining;
+
+            if (transferredEnergy <= 0) {
+                continue;
+            }
+
+            consumer.getStorage().receiveEnergy(transferredEnergy, false);
+            consumer.sync();
         }
-
-        long transferredEnergy = energy - remaining;
-
-        if (transferredEnergy <= 0) {
-            return;
-        }
-
-        long inserted = consumer.getStorage().receiveEnergy(transferredEnergy, false);
-
-        if (inserted <= 0) {
-            return;
-        }
-
-        consumer.sync();
 
         for (CableFlow flow : path.cables()) {
             BlockEntity blockEntity = level.getBlockEntity(flow.pos());
