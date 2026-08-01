@@ -10,7 +10,8 @@
         "east": "cable"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_horizontal"
+        "model": "voltrix:block/redstone_cable",
+        "y": 90
       }
     },
     {
@@ -18,7 +19,8 @@
         "east": "machine"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_horizontal_connect"
+        "model": "voltrix:block/redstone_cable_connect",
+        "y": 90
       }
     },
     {
@@ -26,8 +28,8 @@
         "west": "cable"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_horizontal",
-        "y": 180
+        "model": "voltrix:block/redstone_cable",
+        "y": 270
       }
     },
     {
@@ -35,8 +37,8 @@
         "west": "machine"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_horizontal_connect",
-        "y": 180
+        "model": "voltrix:block/redstone_cable_connect",
+        "y": 270
       }
     },
     {
@@ -44,8 +46,7 @@
         "north": "cable"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_horizontal",
-        "y": 270
+        "model": "voltrix:block/redstone_cable"
       }
     },
     {
@@ -53,8 +54,7 @@
         "north": "machine"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_horizontal_connect",
-        "y": 270
+        "model": "voltrix:block/redstone_cable_connect"
       }
     },
     {
@@ -62,8 +62,8 @@
         "south": "cable"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_horizontal",
-        "y": 90
+        "model": "voltrix:block/redstone_cable",
+        "y": 180
       }
     },
     {
@@ -71,8 +71,8 @@
         "south": "machine"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_horizontal_connect",
-        "y": 90
+        "model": "voltrix:block/redstone_cable_connect",
+        "y": 180
       }
     },
     {
@@ -80,8 +80,8 @@
         "up": "cable"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_vertical",
-        "z": 0
+        "model": "voltrix:block/redstone_cable",
+        "x": 270
       }
     },
     {
@@ -89,8 +89,8 @@
         "up": "machine"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_vertical_connect",
-        "z": 0
+        "model": "voltrix:block/redstone_cable_connect",
+        "x": 270
       }
     },
     {
@@ -98,8 +98,8 @@
         "down": "cable"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_vertical",
-        "z": 180
+        "model": "voltrix:block/redstone_cable",
+        "x": 90
       }
     },
     {
@@ -107,8 +107,8 @@
         "down": "machine"
       },
       "apply": {
-        "model": "voltrix:block/redstone_cable_vertical_connect",
-        "z": 180
+        "model": "voltrix:block/redstone_cable_connect",
+        "x": 90
       }
     }
   ]

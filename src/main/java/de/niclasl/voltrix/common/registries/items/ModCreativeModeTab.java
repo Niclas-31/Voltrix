@@ -69,6 +69,7 @@ public class ModCreativeModeTab {
                                 output.accept(ModBlocks.REINFORCED_REDSTONE_STEEL);
                                 output.accept(ModBlocks.REINFORCED_DIAMOND_STEEL);
                                 output.accept(ModBlocks.REINFORCED_NETHERITE_STEEL);
+                                output.accept(ModBlocks.SAFETY_MARKING);
                             })
                             .build()
             );

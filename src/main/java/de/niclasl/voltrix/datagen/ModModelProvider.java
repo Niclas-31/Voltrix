@@ -43,6 +43,7 @@ public class ModModelProvider extends ModelProvider {
         blockModels.createTrivialCube(ModBlocks.REINFORCED_DIAMOND_STEEL.get());
         blockModels.createTrivialCube(ModBlocks.REINFORCED_NETHERITE_STEEL.get());
         createEnergyMeter(blockModels);
+        blockModels.createTrivialCube(ModBlocks.SAFETY_MARKING.get());
 
         itemModels.generateFlatItem(ModItems.STEEL_INGOT.get(), ModelTemplates.FLAT_ITEM);
     }

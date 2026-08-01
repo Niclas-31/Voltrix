@@ -39,7 +39,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.REINFORCED_COPPER_STEEL.get())
                 .add(ModBlocks.REINFORCED_GOLD_STEEL.get())
                 .add(ModBlocks.REINFORCED_REDSTONE_STEEL.get())
-                .add(ModBlocks.ENERGY_METER.get());
+                .add(ModBlocks.ENERGY_METER.get())
+                .add(ModBlocks.SAFETY_MARKING.get());
 
         tag(BlockTags.NEEDS_DIAMOND_TOOL)
                 .add(ModBlocks.REINFORCED_DIAMOND_STEEL.get())
@@ -71,7 +72,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.REINFORCED_REDSTONE_STEEL.get())
                 .add(ModBlocks.REINFORCED_DIAMOND_STEEL.get())
                 .add(ModBlocks.REINFORCED_NETHERITE_STEEL.get())
-                .add(ModBlocks.ENERGY_METER.get());
+                .add(ModBlocks.ENERGY_METER.get())
+                .add(ModBlocks.SAFETY_MARKING.get());
 
         tag(BlockTags.SLABS)
                 .add(ModBlocks.STEEL_SLAB.get());

@@ -24,6 +24,7 @@
     "voltrix:reinforced_redstone_steel",
     "voltrix:reinforced_diamond_steel",
     "voltrix:reinforced_netherite_steel",
-    "voltrix:energy_meter"
+    "voltrix:energy_meter",
+    "voltrix:safety_marking"
   ]
 }

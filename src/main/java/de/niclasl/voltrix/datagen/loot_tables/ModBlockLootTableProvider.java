@@ -42,6 +42,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.REINFORCED_DIAMOND_STEEL.get());
         dropSelf(ModBlocks.REINFORCED_NETHERITE_STEEL.get());
         dropSelf(ModBlocks.ENERGY_METER.get());
+        dropSelf(ModBlocks.SAFETY_MARKING.get());
     }
 
     @Override

@@ -167,6 +167,10 @@ public class ModBlocks {
             (properties) -> new EnergyMeter(
                     properties.strength(10.0f, 25.0f).requiresCorrectToolForDrops()));
 
+    public static final DeferredBlock<Block> SAFETY_MARKING = registerBlock("safety_marking",
+            (properties) -> new Block(
+                    properties.strength(40.0f, 100.0f).requiresCorrectToolForDrops()));
+
     private static ToIntFunction<BlockState> litBlockEmission(int lightValue) {
         return (p_50763_) -> (Boolean)p_50763_.getValue(BlockStateProperties.LIT) ? lightValue : 0;
     }
