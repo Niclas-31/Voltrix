@@ -56,7 +56,8 @@ public class ModBlockEntities {
 
     public static final Supplier<BlockEntityType<SolarPanelEntity>> SOLAR_PANEL =
             BLOCK_ENTITIES.register("solar_panel", () -> new BlockEntityType<>(
-                    SolarPanelEntity::new, ModBlocks.BASIC_SOLAR_PANEL.get()));
+                    SolarPanelEntity::new, ModBlocks.BASIC_SOLAR_PANEL.get(),
+                    ModBlocks.ADVANCED_SOLAR_PANEL.get(), ModBlocks.ELITE_SOLAR_PANEL.get()));
 
     public static final Supplier<BlockEntityType<EnergyMeterEntity>> ENERGY_METER =
             BLOCK_ENTITIES.register("energy_meter", () -> new BlockEntityType<>(

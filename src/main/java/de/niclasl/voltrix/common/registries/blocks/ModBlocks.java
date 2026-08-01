@@ -80,7 +80,7 @@ public class ModBlocks {
                     properties.strength(20f).requiresCorrectToolForDrops()
                             .lightLevel(litBlockEmission(13))));
 
-    public static final DeferredBlock<Block> BASIC_SOLAR_PANEL = registerBlock("solar_panel",
+    public static final DeferredBlock<Block> BASIC_SOLAR_PANEL = registerBlock("basic_solar_panel",
             (properties) -> new SolarPanel(
                     properties.strength(300f, 20f).requiresCorrectToolForDrops(),
                     SolarPanelTier.BASIC),
