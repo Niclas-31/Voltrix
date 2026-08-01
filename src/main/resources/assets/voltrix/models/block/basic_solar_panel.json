@@ -1,7 +1,7 @@
 {
 	"textures": {
-		"0": "voltrix:block/solar_panel",
-		"particle": "voltrix:block/solar_panel"
+		"0": "voltrix:block/basic_solar_panel",
+		"particle": "voltrix:block/basic_solar_panel"
 	},
 	"elements": [
 		{

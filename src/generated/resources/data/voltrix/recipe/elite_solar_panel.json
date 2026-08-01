@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "C": "voltrix:reinforced_diamond_steel",
+    "D": "voltrix:diamond_cable",
+    "E": "voltrix:advanced_solar_panel",
+    "N": "minecraft:netherite_ingot"
+  },
+  "pattern": [
+    "NDN",
+    "CEC",
+    "NDN"
+  ],
+  "result": {
+    "id": "voltrix:elite_solar_panel"
+  }
+}

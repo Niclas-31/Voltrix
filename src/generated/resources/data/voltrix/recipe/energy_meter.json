@@ -3,16 +3,17 @@
   "category": "redstone",
   "key": {
     "C": "voltrix:copper_cable",
-    "G": "minecraft:glass",
-    "I": "voltrix:steel_ingot",
+    "G": "minecraft:glass_pane",
+    "I": "minecraft:iron_ingot",
+    "Q": "minecraft:quartz",
     "R": "minecraft:redstone"
   },
   "pattern": [
     "GGG",
-    "GRG",
-    "CIC"
+    "RCR",
+    "IQI"
   ],
   "result": {
-    "id": "voltrix:solar_panel"
+    "id": "voltrix:energy_meter"
   }
 }

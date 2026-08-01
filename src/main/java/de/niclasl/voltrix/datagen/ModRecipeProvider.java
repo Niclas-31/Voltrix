@@ -50,7 +50,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(ModBlocks.STEEL_BLOCK)
                 .unlockedBy("has_steel_block", has(ModBlocks.STEEL_BLOCK))
                 .group("steel_ingot")
-                .save(output, "steel_ingot_from_steel_block");
+                .save(output, "voltrix:steel_ingot_from_steel_block");
 
         shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.STEEL_BLOCK)
                 .pattern("III")
@@ -166,11 +166,50 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_steel_ingot", has(ModItems.STEEL_INGOT))
                 .save(output);
 
-        shaped(RecipeCategory.REDSTONE, ModBlocks.COPPER_CABLE, 4)
+        shaped(RecipeCategory.REDSTONE, ModBlocks.COPPER_CABLE, 12)
                 .pattern("CC")
                 .define('C', Items.COPPER_INGOT)
                 .unlockedBy("has_copper_ingot", has(Items.COPPER_INGOT))
+                .group("cables")
                 .save(output);
+
+        shaped(RecipeCategory.REDSTONE, ModBlocks.IRON_CABLE, 10)
+                .pattern("II")
+                .define('I', Items.IRON_INGOT)
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .group("cables")
+                .save(output);
+
+        shaped(RecipeCategory.REDSTONE, ModBlocks.GOLD_CABLE, 8)
+                .pattern("II")
+                .define('I', Items.GOLD_INGOT)
+                .unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
+                .group("cables")
+                .save(output);
+
+        shaped(RecipeCategory.REDSTONE, ModBlocks.REDSTONE_CABLE, 6)
+                .pattern("RR")
+                .define('R', Items.REDSTONE)
+                .unlockedBy("has_redstone", has(Items.REDSTONE))
+                .group("cables")
+                .save(output);
+
+        shaped(RecipeCategory.REDSTONE, ModBlocks.EMERALD_CABLE, 4)
+                .pattern("EE")
+                .define('E', Items.EMERALD)
+                .unlockedBy("has_emerald", has(Items.EMERALD))
+                .group("cables")
+                .save(output);
+
+        shaped(RecipeCategory.REDSTONE, ModBlocks.DIAMOND_CABLE, 2)
+                .pattern("DD")
+                .define('D', Items.DIAMOND)
+                .unlockedBy("has_diamond", has(Items.DIAMOND))
+                .group("cables")
+                .save(output);
+
+        netheriteSmithing(ModBlocks.DIAMOND_CABLE.asItem(), RecipeCategory.REDSTONE,
+                ModBlocks.NETHERITE_CABLE.asItem());
 
         shaped(RecipeCategory.REDSTONE, ModBlocks.FUEL_GENERATOR)
                 .pattern("SSS")
@@ -194,14 +233,60 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_copper_cable", has(ModBlocks.COPPER_CABLE))
                 .save(output);
 
-        shaped(RecipeCategory.REDSTONE, ModBlocks.SOLAR_PANEL)
+        shaped(RecipeCategory.REDSTONE, ModBlocks.BASIC_SOLAR_PANEL)
                 .pattern("GGG")
-                .pattern("CCS")
-                .pattern("RSS")
+                .pattern("GRG")
+                .pattern("CIC")
                 .define('G', Items.GLASS)
-                .define('S', ModItems.STEEL_INGOT)
+                .define('R', Items.REDSTONE)
+                .define('C', ModBlocks.COPPER_CABLE)
+                .define('I', ModItems.STEEL_INGOT)
+                .unlockedBy("has_copper_cable", has(ModBlocks.COPPER_CABLE))
+                .save(output);
+
+        shaped(RecipeCategory.REDSTONE, ModBlocks.ADVANCED_SOLAR_PANEL)
+                .pattern("GGG")
+                .pattern("RBR")
+                .pattern("GSG")
+                .define('B', ModBlocks.BASIC_SOLAR_PANEL)
+                .define('R', ModBlocks.REINFORCED_GOLD_STEEL)
+                .define('G', ModBlocks.GOLD_CABLE)
+                .define('S', Items.EMERALD)
+                .unlockedBy("has_copper_cable", has(ModBlocks.COPPER_CABLE))
+                .save(output);
+
+        shaped(RecipeCategory.REDSTONE, ModBlocks.ELITE_SOLAR_PANEL)
+                .pattern("NDN")
+                .pattern("CEC")
+                .pattern("NDN")
+                .define('N', Items.NETHERITE_INGOT)
+                .define('D', ModBlocks.DIAMOND_CABLE)
+                .define('C', ModBlocks.REINFORCED_DIAMOND_STEEL)
+                .define('E', ModBlocks.ADVANCED_SOLAR_PANEL)
+                .unlockedBy("has_copper_cable", has(ModBlocks.COPPER_CABLE))
+                .save(output);
+
+        shaped(RecipeCategory.TOOLS, ModItems.ENERGY_GOGGLES)
+                .pattern("GCG")
+                .pattern("RSR")
+                .pattern(" L ")
+                .define('G', Items.GLASS)
                 .define('C', ModBlocks.COPPER_CABLE)
                 .define('R', Items.REDSTONE)
+                .define('S', ModBlocks.REINFORCED_GOLD_STEEL)
+                .define('L', Items.LEATHER)
+                .unlockedBy("has_copper_cable", has(ModBlocks.COPPER_CABLE))
+                .save(output);
+
+        shaped(RecipeCategory.REDSTONE, ModBlocks.ENERGY_METER)
+                .pattern("GGG")
+                .pattern("RCR")
+                .pattern("IQI")
+                .define('G', Items.GLASS_PANE)
+                .define('R', Items.REDSTONE)
+                .define('C', ModBlocks.COPPER_CABLE)
+                .define('I', Items.IRON_INGOT)
+                .define('Q', Items.QUARTZ)
                 .unlockedBy("has_copper_cable", has(ModBlocks.COPPER_CABLE))
                 .save(output);
     }

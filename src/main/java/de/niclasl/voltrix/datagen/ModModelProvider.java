@@ -111,7 +111,8 @@ public class ModModelProvider extends ModelProvider {
                 x.get() != ModBlocks.COPPER_CABLE.get() && x.get() != ModBlocks.IRON_CABLE.get()
                         && x.get() != ModBlocks.GOLD_CABLE.get() && x.get() != ModBlocks.REDSTONE_CABLE.get()
                         && x.get() != ModBlocks.EMERALD_CABLE.get() && x.get() != ModBlocks.DIAMOND_CABLE.get()
-                        && x.get() != ModBlocks.NETHERITE_CABLE.get() && x.get() != ModBlocks.SOLAR_PANEL.get());
+                        && x.get() != ModBlocks.NETHERITE_CABLE.get() && x.get() != ModBlocks.BASIC_SOLAR_PANEL.get()
+                        && x.get() != ModBlocks.ADVANCED_SOLAR_PANEL.get() && x.get() != ModBlocks.ELITE_SOLAR_PANEL.get());
     }
 
     @Override
@@ -121,6 +122,7 @@ public class ModModelProvider extends ModelProvider {
                         && x.get() != ModBlocks.GOLD_CABLE.asItem() && x.get() != ModBlocks.REDSTONE_CABLE.asItem()
                         && x.get() != ModBlocks.EMERALD_CABLE.asItem() && x.get() != ModBlocks.DIAMOND_CABLE.asItem()
                         && x.get() != ModBlocks.NETHERITE_CABLE.asItem() && x.get() != ModItems.WRENCH.get()
-                        && x.get() != ModBlocks.SOLAR_PANEL.asItem() && x.get() != ModItems.ENERGY_GOGGLES.get());
+                        && x.get() != ModBlocks.BASIC_SOLAR_PANEL.asItem() && x.get() != ModBlocks.ADVANCED_SOLAR_PANEL.asItem()
+                        && x.get() != ModBlocks.ELITE_SOLAR_PANEL.asItem() && x.get() != ModItems.ENERGY_GOGGLES.get());
     }
 }

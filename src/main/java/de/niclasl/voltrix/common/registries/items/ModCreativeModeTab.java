@@ -36,13 +36,15 @@ public class ModCreativeModeTab {
                                 output.accept(ModBlocks.EMERALD_CABLE);
                                 output.accept(ModBlocks.DIAMOND_CABLE);
                                 output.accept(ModBlocks.NETHERITE_CABLE);
-                                output.accept(ModItems.WRENCH);
+                                output.accept(ModBlocks.BASIC_SOLAR_PANEL);
+                                output.accept(ModBlocks.ADVANCED_SOLAR_PANEL);
+                                output.accept(ModBlocks.ELITE_SOLAR_PANEL);
                                 output.accept(ModBlocks.FUEL_GENERATOR);
                                 output.accept(ModBlocks.ELECTRIC_FURNACE);
-                                output.accept(ModBlocks.SOLAR_PANEL);
+                                output.accept(ModBlocks.ENERGY_METER);
+                                output.accept(ModItems.WRENCH);
                                 output.accept(ModItems.STEEL_INGOT);
                                 output.accept(ModItems.ENERGY_GOGGLES);
-                                output.accept(ModBlocks.ENERGY_METER);
                             })
                             .build()
             );

@@ -10,6 +10,8 @@
     "voltrix:fuel_generator",
     "voltrix:electric_furnace",
     "voltrix:solar_panel",
+    "voltrix:advanced_solar_panel",
+    "voltrix:elite_solar_panel",
     "voltrix:steel_block",
     "voltrix:steel_slab",
     "voltrix:steel_stairs",

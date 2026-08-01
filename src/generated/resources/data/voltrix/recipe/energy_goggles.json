@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "voltrix:copper_cable",
+    "G": "minecraft:glass",
+    "L": "minecraft:leather",
+    "R": "minecraft:redstone",
+    "S": "voltrix:reinforced_gold_steel"
+  },
+  "pattern": [
+    "GCG",
+    "RSR",
+    " L "
+  ],
+  "result": {
+    "id": "voltrix:energy_goggles"
+  }
+}

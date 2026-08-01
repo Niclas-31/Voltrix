@@ -80,10 +80,22 @@ public class ModBlocks {
                     properties.strength(20f).requiresCorrectToolForDrops()
                             .lightLevel(litBlockEmission(13))));
 
-    public static final DeferredBlock<Block> SOLAR_PANEL = registerBlock("solar_panel",
+    public static final DeferredBlock<Block> BASIC_SOLAR_PANEL = registerBlock("solar_panel",
             (properties) -> new SolarPanel(
                     properties.strength(300f, 20f).requiresCorrectToolForDrops(),
                     SolarPanelTier.BASIC),
+            ModExtensions.MYTHIC.getValue());
+
+    public static final DeferredBlock<Block> ADVANCED_SOLAR_PANEL = registerBlock("advanced_solar_panel",
+            (properties) -> new SolarPanel(
+                    properties.strength(320f, 25f).requiresCorrectToolForDrops(),
+                    SolarPanelTier.ADVANCED),
+            ModExtensions.MYTHIC.getValue());
+
+    public static final DeferredBlock<Block> ELITE_SOLAR_PANEL = registerBlock("elite_solar_panel",
+            (properties) -> new SolarPanel(
+                    properties.strength(340f, 30f).requiresCorrectToolForDrops(),
+                    SolarPanelTier.ELITE),
             ModExtensions.MYTHIC.getValue());
 
     public static final DeferredBlock<Block> STEEL_BLOCK = registerBlock("steel_block",
