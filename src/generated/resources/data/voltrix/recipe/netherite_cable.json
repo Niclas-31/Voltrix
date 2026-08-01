@@ -3,13 +3,13 @@
   "category": "redstone",
   "group": "cables",
   "key": {
-    "C": "minecraft:copper_ingot"
+    "I": "minecraft:netherite_ingot"
   },
   "pattern": [
-    "CC"
+    "II"
   ],
   "result": {
-    "count": 12,
-    "id": "voltrix:copper_cable"
+    "count": 2,
+    "id": "voltrix:netherite_cable"
   }
 }

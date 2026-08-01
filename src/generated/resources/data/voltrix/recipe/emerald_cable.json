@@ -3,13 +3,13 @@
   "category": "redstone",
   "group": "cables",
   "key": {
-    "C": "minecraft:copper_ingot"
+    "E": "minecraft:emerald"
   },
   "pattern": [
-    "CC"
+    "EE"
   ],
   "result": {
-    "count": 12,
-    "id": "voltrix:copper_cable"
+    "count": 4,
+    "id": "voltrix:emerald_cable"
   }
 }
