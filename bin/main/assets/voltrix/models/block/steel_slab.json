@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "voltrix:block/steel_block",
-    "side": "voltrix:block/steel_block",
-    "top": "voltrix:block/steel_block"
-  }
-}
