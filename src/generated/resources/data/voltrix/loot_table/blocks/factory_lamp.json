@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "voltrix:copper_cable"
+          "name": "voltrix:factory_lamp"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "voltrix:blocks/copper_cable"
+  "random_sequence": "voltrix:blocks/factory_lamp"
 }
