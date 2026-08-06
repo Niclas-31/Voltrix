@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": "#minecraft:netherite_tool_materials",
+  "base": "voltrix:reinforced_diamond_steel",
+  "result": {
+    "id": "voltrix:reinforced_netherite_steel"
+  },
+  "template": "minecraft:netherite_upgrade_smithing_template"
+}

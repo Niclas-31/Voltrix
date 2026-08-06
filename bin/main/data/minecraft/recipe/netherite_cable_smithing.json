@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": "#minecraft:netherite_tool_materials",
+  "base": "voltrix:diamond_cable",
+  "result": {
+    "id": "voltrix:netherite_cable"
+  },
+  "template": "minecraft:netherite_upgrade_smithing_template"
+}

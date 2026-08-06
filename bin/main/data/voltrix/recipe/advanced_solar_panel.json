@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "B": "voltrix:basic_solar_panel",
+    "G": "voltrix:gold_cable",
+    "R": "voltrix:reinforced_gold_steel",
+    "S": "minecraft:emerald"
+  },
+  "pattern": [
+    "GGG",
+    "RBR",
+    "GSG"
+  ],
+  "result": {
+    "id": "voltrix:advanced_solar_panel"
+  }
+}

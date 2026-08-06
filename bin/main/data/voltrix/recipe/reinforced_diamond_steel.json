@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "reinforced_steel",
+  "key": {
+    "I": "minecraft:diamond",
+    "S": "voltrix:steel_block"
+  },
+  "pattern": [
+    "SIS",
+    "ISI",
+    "SIS"
+  ],
+  "result": {
+    "id": "voltrix:reinforced_diamond_steel"
+  }
+}

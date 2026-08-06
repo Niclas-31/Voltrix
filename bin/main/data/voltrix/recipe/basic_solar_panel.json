@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "C": "voltrix:copper_cable",
+    "G": "minecraft:glass",
+    "I": "voltrix:steel_ingot",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "GGG",
+    "GRG",
+    "CIC"
+  ],
+  "result": {
+    "id": "voltrix:basic_solar_panel"
+  }
+}

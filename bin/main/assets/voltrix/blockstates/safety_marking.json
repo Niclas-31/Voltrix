@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "voltrix:block/safety_marking"
+    }
+  }
+}

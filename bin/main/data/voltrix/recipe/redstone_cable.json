@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "cables",
+  "key": {
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "RR"
+  ],
+  "result": {
+    "count": 6,
+    "id": "voltrix:redstone_cable"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "itemGroup.voltrix": "Voltrix",
+  "itemGroup.voltrix_building_blocks": "Voltrix Baublöcke",
+
+  "block.voltrix.copper_cable": "Kupfer Kabel",
+  "block.voltrix.iron_cable": "Iron Kabel",
+  "block.voltrix.gold_cable": "Gold Kabel",
+  "block.voltrix.redstone_cable": "Redstone Kabel",
+  "block.voltrix.emerald_cable": "Smaragd Kabel",
+  "block.voltrix.diamond_cable": "Diamant Kabel",
+  "block.voltrix.netherite_cable": "Netherit Kabel",
+  "block.voltrix.fuel_generator": "Kraftstoffgenerator",
+  "block.voltrix.electric_furnace": "Elektrischer Ofen",
+  "block.voltrix.basic_solar_panel": "Einfaches Solarmodul",
+  "block.voltrix.advanced_solar_panel": "Fortgeschrittenes Solarmodul",
+  "block.voltrix.elite_solar_panel": "Elite-Solarmodul",
+  "block.voltrix.steel_block": "Stahlblock",
+  "block.voltrix.steel_slab": "Stahlstufe",
+  "block.voltrix.steel_stairs": "Stahltreppe",
+  "block.voltrix.steel_wall": "Stahlmauer",
+  "block.voltrix.steel_fence": "Stahlzaun",
+  "block.voltrix.steel_fence_gate": "Stahlzauntor",
+  "block.voltrix.steel_pressure_plate": "Stahldruckplatte",
+  "block.voltrix.reinforced_copper_steel": "Verstärkter Kupfer Stahl",
+  "block.voltrix.reinforced_gold_steel": "Verstärkter Gold Stahl",
+  "block.voltrix.reinforced_redstone_steel": "Verstärkter Redstone Stahl",
+  "block.voltrix.reinforced_diamond_steel": "Verstärkter Diamant Stahl",
+  "block.voltrix.reinforced_netherite_steel": "Verstärkter Netherit Stahl",
+  "block.voltrix.energy_meter": "Energiemesser",
+  "block.voltrix.safety_marking": "Sicherheitsmarkierung",
+
+  "item.voltrix.wrench": "Schraubenschlüssel",
+  "item.voltrix.steel_ingot": "Stahlbarren",
+  "item.voltrix.energy_goggles": "Energiebrille",
+
+  "item.voltrix.wrench.selected": "Ausgewählt: %s",
+  "item.voltrix.wrench.update": "%s: %s",
+
+  "message.voltrix.cable.insulated": "Kabel ist nun Isoliert.",
+  "message.voltrix.cable.no_insulated": "Kabel ist nicht mehr Isoliert.",
+
+  "death.attack.electricity": "%1$s wurde durch Strom getötet",
+  "death.attack.electricity.player": "%1$s wurde von %2$s elektrisch getötet"
+}
