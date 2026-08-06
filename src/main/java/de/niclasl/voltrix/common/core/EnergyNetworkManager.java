@@ -51,7 +51,6 @@ public class EnergyNetworkManager {
         }
 
         if (neighbours.isEmpty()) {
-
             EnergyNetworkImpl network = createNetwork(level);
 
             network.addNode(pos);

@@ -1,6 +1,7 @@
 package de.niclasl.voltrix.common.registries.blocks.custom.producer;
 
 import com.mojang.serialization.MapCodec;
+import de.niclasl.voltrix.common.registries.blocks.custom.base.AbstractEnergyBlock;
 import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
 import de.niclasl.voltrix.common.registries.blocks.entities.producer.FuelGeneratorEntity;
 import de.niclasl.voltrix.common.registries.items.custom.WrenchItem;
@@ -13,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -27,7 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-public class FuelGenerator extends BaseEntityBlock {
+public class FuelGenerator extends AbstractEnergyBlock {
     public static final MapCodec<FuelGenerator> CODEC = simpleCodec(FuelGenerator::new);
 
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;

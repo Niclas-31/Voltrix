@@ -1,11 +1,11 @@
 package de.niclasl.voltrix.common.registries.blocks.custom.transmission;
 
 import com.mojang.serialization.MapCodec;
+import de.niclasl.voltrix.common.registries.blocks.custom.base.AbstractEnergyBlock;
 import de.niclasl.voltrix.common.registries.blocks.entities.transmission.EnergyMeterEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-public class EnergyMeter extends BaseEntityBlock {
+public class EnergyMeter extends AbstractEnergyBlock {
     public static final MapCodec<EnergyMeter> CODEC = simpleCodec(EnergyMeter::new);
 
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;

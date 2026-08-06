@@ -39,6 +39,7 @@ public class ModCreativeModeTab {
                                 output.accept(ModBlocks.BASIC_SOLAR_PANEL);
                                 output.accept(ModBlocks.ADVANCED_SOLAR_PANEL);
                                 output.accept(ModBlocks.ELITE_SOLAR_PANEL);
+                                output.accept(ModBlocks.FACTORY_LAMP);
                                 output.accept(ModBlocks.FUEL_GENERATOR);
                                 output.accept(ModBlocks.ELECTRIC_FURNACE);
                                 output.accept(ModBlocks.ENERGY_METER);

@@ -17,4 +17,6 @@ public abstract class AbstractConsumerEntity extends AbstractEnergyEntity implem
     public void consumeEnergy(long energy, long energyPerTick) {
         storage.setEnergy(Math.max(0, energy - energyPerTick));
     }
+
+    protected abstract long getEnergyPerTick();
 }

@@ -49,10 +49,6 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
         }
     }
 
-    public boolean isPowered(Direction dir) {
-        return poweredSides.getOrDefault(dir, false);
-    }
-
     public void clearPoweredSides() {
         boolean changed = false;
 
@@ -207,64 +203,44 @@ public abstract class AbstractCableEntity extends AbstractEnergyEntity implement
             return;
         }
 
+        if (isInsulated()) {
+            return;
+        }
+
+        PowerState state = getPowerState();
+
+        int voltage = state.voltage();
+        int amperage = state.amperage();
+
+        if (voltage <= 0 || amperage <= 0) {
+            return;
+        }
+
+        float damage = calculateShockDamage(voltage, amperage);
+
         List<Entity> entities = level.getEntitiesOfClass(
                 Entity.class,
                 new AABB(worldPosition).inflate(0.1)
         );
 
-        if (isInsulated()) {
-            return;
-        }
-
         for (Direction direction : Direction.values()) {
             ConnectionMode mode = getConnectionMode(direction);
 
-            if (mode != ConnectionMode.OUTPUT && mode != ConnectionMode.BOTH) {
+            if (!mode.canConnect()) {
                 continue;
             }
-
-            if (!isPowered(direction)) {
-                continue;
-            }
-
-            PowerState state = getPowerState();
-
-            int voltage = state.voltage();
-            int amperage = state.amperage();
-
-            if (voltage < 100 || amperage <= 0) {
-                continue;
-            }
-
-            BlockPos firePos = worldPosition.relative(direction);
-
-            BlockState neighborState = level.getBlockState(firePos);
-
-            int power = voltage * amperage;
-
-            int chance;
-
-            if (power >= 100000) {
-                chance = 5;
-            } else if (power >= 10000) {
-                chance = 20;
-            } else if (power >= 1000) {
-                chance = 50;
-            } else {
-                chance = 100;
-            }
-
-            if (neighborState.isFlammable(level, worldPosition, direction.getOpposite())
-                    && level.getRandom().nextInt(chance) == 0) {
-                level.setBlockAndUpdate(firePos, Blocks.FIRE.defaultBlockState());
-            }
-
-            float damage = calculateShockDamage(voltage, amperage);
 
             for (Entity entity : entities) {
                 if (isEntityTouchingSide(entity, direction)) {
                     shock(entity, damage);
                 }
+            }
+
+            BlockPos firePos = worldPosition.relative(direction);
+            BlockState neighbor = level.getBlockState(firePos);
+
+            if (neighbor.isFlammable(level, firePos, direction.getOpposite())) {
+                level.setBlockAndUpdate(firePos, Blocks.FIRE.defaultBlockState());
             }
         }
     }

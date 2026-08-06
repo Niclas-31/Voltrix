@@ -4,6 +4,7 @@ import de.niclasl.voltrix.Voltrix;
 import de.niclasl.voltrix.common.registries.blocks.ModBlocks;
 import de.niclasl.voltrix.common.registries.blocks.entities.cable.*;
 import de.niclasl.voltrix.common.registries.blocks.entities.consumer.ElectricFurnaceEntity;
+import de.niclasl.voltrix.common.registries.blocks.entities.consumer.FactoryLampEntity;
 import de.niclasl.voltrix.common.registries.blocks.entities.producer.FuelGeneratorEntity;
 import de.niclasl.voltrix.common.registries.blocks.entities.producer.SolarPanelEntity;
 import de.niclasl.voltrix.common.registries.blocks.entities.transmission.EnergyMeterEntity;
@@ -62,6 +63,10 @@ public class ModBlockEntities {
     public static final Supplier<BlockEntityType<EnergyMeterEntity>> ENERGY_METER =
             BLOCK_ENTITIES.register("energy_meter", () -> new BlockEntityType<>(
                     EnergyMeterEntity::new, ModBlocks.ENERGY_METER.get()));
+
+    public static final Supplier<BlockEntityType<FactoryLampEntity>> FACTORY_LAMP =
+            BLOCK_ENTITIES.register("factory_lamp", () -> new BlockEntityType<>(
+                    FactoryLampEntity::new, ModBlocks.FACTORY_LAMP.get()));
 
     public static void register(IEventBus bus) {
         BLOCK_ENTITIES.register(bus);

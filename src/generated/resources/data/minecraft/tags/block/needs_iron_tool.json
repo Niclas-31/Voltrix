@@ -22,6 +22,7 @@
     "voltrix:reinforced_gold_steel",
     "voltrix:reinforced_redstone_steel",
     "voltrix:energy_meter",
-    "voltrix:safety_marking"
+    "voltrix:safety_marking",
+    "voltrix:factory_lamp"
   ]
 }

@@ -1,8 +1,9 @@
 package de.niclasl.voltrix.common.registries.blocks.custom.base;
 
+import de.niclasl.voltrix.common.registries.blocks.ModBlocks;
 import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractCableEntity;
-import de.niclasl.voltrix_api.energy.ConnectionMode;
 import de.niclasl.voltrix.common.registries.blocks.property.ConnectionVisual;
+import de.niclasl.voltrix_api.energy.ConnectionMode;
 import de.niclasl.voltrix_api.energy.IEnergyCable;
 import de.niclasl.voltrix_api.energy.IEnergyConnectable;
 import net.minecraft.core.BlockPos;
@@ -19,11 +20,11 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
@@ -33,7 +34,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-public abstract class AbstractCableBlock extends BaseEntityBlock {
+public abstract class AbstractCableBlock extends AbstractEnergyBlock {
     public static final EnumProperty<ConnectionVisual> NORTH =
             EnumProperty.create("north", ConnectionVisual.class);
     public static final EnumProperty<ConnectionVisual> SOUTH =
@@ -46,6 +47,8 @@ public abstract class AbstractCableBlock extends BaseEntityBlock {
             EnumProperty.create("up", ConnectionVisual.class);
     public static final EnumProperty<ConnectionVisual> DOWN  =
             EnumProperty.create("down", ConnectionVisual.class);
+    public static final BooleanProperty COVERED =
+            BooleanProperty.create("covered");
 
     private static final VoxelShape CENTER = Block.box(6, 6, 6, 10, 10, 10);
 
@@ -110,6 +113,7 @@ public abstract class AbstractCableBlock extends BaseEntityBlock {
                 .setValue(WEST, ConnectionVisual.NONE)
                 .setValue(UP, ConnectionVisual.NONE)
                 .setValue(DOWN, ConnectionVisual.NONE)
+                .setValue(COVERED, false)
         );
     }
 
@@ -180,7 +184,7 @@ public abstract class AbstractCableBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN);
+        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN, COVERED);
     }
 
     @Override
@@ -193,15 +197,31 @@ public abstract class AbstractCableBlock extends BaseEntityBlock {
                                                    @NonNull BlockPos pos, @NonNull Player player, @NonNull InteractionHand hand,
                                                    @NonNull BlockHitResult hitResult
     ) {
+        if (level.isClientSide()) {
+            return InteractionResult.SUCCESS;
+        }
+
+        if (state.getBlock() instanceof AbstractCableBlock
+                && stack.is(ModBlocks.SAFETY_MARKING.asItem())) {
+
+            level.setBlock(
+                    pos,
+                    state.setValue(COVERED, true),
+                    3
+            );
+
+            if (!player.getAbilities().instabuild) {
+                stack.shrink(1);
+            }
+
+            return InteractionResult.SUCCESS;
+        }
+
         BlockEntity blockEntity = level.getBlockEntity(pos);
 
         if (stack.getItem() instanceof ShearsItem) {
             if (!(blockEntity instanceof AbstractCableEntity cable)) {
                 return InteractionResult.PASS;
-            }
-
-            if (level.isClientSide()) {
-                return InteractionResult.SUCCESS;
             }
 
             if (!cable.isInsulated()) {
@@ -231,10 +251,6 @@ public abstract class AbstractCableBlock extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
-        if (level.isClientSide()) {
-            return InteractionResult.SUCCESS;
-        }
-
         if (cable.isInsulated()) {
             return InteractionResult.FAIL;
         }
@@ -248,6 +264,32 @@ public abstract class AbstractCableBlock extends BaseEntityBlock {
         ((ServerPlayer) player).sendSystemMessage(Component.translatable("message.voltrix.cable.insulated"), true);
 
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public @NonNull BlockState playerWillDestroy(@NonNull Level level, @NonNull BlockPos pos,
+                                                 @NonNull BlockState state, @NonNull Player player) {
+        if (state.getValue(COVERED)) {
+            popResource(
+                    level,
+                    pos,
+                    new ItemStack(ModBlocks.SAFETY_MARKING.get())
+            );
+        }
+
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+
+        if (blockEntity instanceof AbstractCableEntity cable) {
+            if (cable.isInsulated()) {
+                popResource(
+                        level,
+                        pos,
+                        cable.getInsulation()
+                );
+            }
+        }
+
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
@@ -296,6 +338,10 @@ public abstract class AbstractCableBlock extends BaseEntityBlock {
         }
         if (state.getValue(DOWN) == ConnectionVisual.MACHINE) {
             shape = Shapes.or(shape, MACHINE_DOWN_SHAPE);
+        }
+
+        if (state.getValue(COVERED)) {
+            shape = Shapes.block();
         }
 
         return shape;

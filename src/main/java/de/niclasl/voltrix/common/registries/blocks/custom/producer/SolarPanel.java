@@ -2,6 +2,7 @@ package de.niclasl.voltrix.common.registries.blocks.custom.producer;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import de.niclasl.voltrix.common.registries.blocks.custom.base.AbstractEnergyBlock;
 import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
 import de.niclasl.voltrix.common.registries.blocks.entities.producer.SolarPanelEntity;
 import de.niclasl.voltrix.common.registries.blocks.property.SolarPanelTier;
@@ -10,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,7 +27,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
-public class SolarPanel extends BaseEntityBlock {
+public class SolarPanel extends AbstractEnergyBlock {
     public static final MapCodec<SolarPanel> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             propertiesCodec(),
             SolarPanelTier.CODEC.fieldOf("tier").forGetter(SolarPanel::getTier)

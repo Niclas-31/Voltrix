@@ -3,10 +3,13 @@ package de.niclasl.voltrix.common.registries.blocks.entities.producer;
 import de.niclasl.voltrix.common.registries.blocks.custom.producer.SolarPanel;
 import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
 import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractProducerEntity;
+import de.niclasl.voltrix.common.registries.stats.ModStats;
 import de.niclasl.voltrix_api.energy.ConnectionMode;
 import de.niclasl.voltrix_api.energy.ElectricalProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -47,6 +50,15 @@ public class SolarPanelEntity extends AbstractProducerEntity {
 
         if (storage.getEnergyStored() < storage.getCapacity()) {
             storage.receiveEnergy(produceEnergy(), false);
+
+            ServerPlayer player = ((ServerLevel) level).getServer()
+                    .getPlayerList()
+                    .getPlayer(getOwner());
+
+            if (player != null) {
+                player.awardStat(ModStats.ENERGY_PRODUCED.get(), (int) produceEnergy());
+            }
+
             sync();
         }
     }

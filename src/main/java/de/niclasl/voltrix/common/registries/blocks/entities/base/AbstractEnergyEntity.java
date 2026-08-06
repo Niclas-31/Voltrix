@@ -8,6 +8,7 @@ import de.niclasl.voltrix_api.energy.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -25,6 +26,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class AbstractEnergyEntity extends BlockEntity implements IEnergyNode, IEnergyConnectable {
 
@@ -32,6 +34,7 @@ public abstract class AbstractEnergyEntity extends BlockEntity implements IEnerg
     private final EnumMap<Direction, ConnectionMode> connections = new EnumMap<>(Direction.class);
     private final ElectricalProperties properties;
     protected EnergyNetworkImpl network;
+    private UUID owner;
 
     protected AbstractEnergyEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, long capacity,
                                    ElectricalProperties properties) {
@@ -73,6 +76,16 @@ public abstract class AbstractEnergyEntity extends BlockEntity implements IEnerg
         };
 
         setConnectionMode(direction, next);
+    }
+
+    public void setOwner(UUID owner) {
+        this.owner = owner;
+        setChanged();
+        sync();
+    }
+
+    public UUID getOwner() {
+        return owner;
     }
 
     @Override
@@ -190,6 +203,8 @@ public abstract class AbstractEnergyEntity extends BlockEntity implements IEnerg
         ).ifPresent(connections::putAll);
 
         storage.setEnergy(input.getIntOr("energy", 0));
+
+        input.read("owner", UUIDUtil.CODEC).ifPresent(uuid -> this.owner = uuid);
     }
 
     @Override
@@ -203,7 +218,9 @@ public abstract class AbstractEnergyEntity extends BlockEntity implements IEnerg
                 Codec.unboundedMap(Direction.CODEC, ConnectionMode.CODEC)
         ).ifPresent(connections::putAll);
 
-        storage.setEnergy(input.getIntOr("energy", 0));
+        storage.setEnergy(input.getLongOr("energy", 0));
+
+        input.read("owner", UUIDUtil.CODEC).ifPresent(uuid -> this.owner = uuid);
     }
 
     @Override
@@ -216,5 +233,9 @@ public abstract class AbstractEnergyEntity extends BlockEntity implements IEnerg
                 this.connections);
 
         output.putLong("energy", storage.getEnergyStored());
+
+        if (owner != null) {
+            output.store("owner", UUIDUtil.CODEC, owner);
+        }
     }
 }

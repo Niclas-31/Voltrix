@@ -1,6 +1,8 @@
 package de.niclasl.voltrix.common.core.network;
 
 import de.niclasl.voltrix.Voltrix;
+import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractConsumerEntity;
+import de.niclasl.voltrix.common.registries.stats.ModStats;
 import de.niclasl.voltrix_api.energy.*;
 import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractCableEntity;
 import de.niclasl.voltrix_api.energy.flow.CableFlow;
@@ -8,10 +10,12 @@ import de.niclasl.voltrix_api.energy.state.PowerState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class EnergyTransferEngine {
 
@@ -167,6 +171,8 @@ public class EnergyTransferEngine {
 
             consumer.getStorage().receiveEnergy(transferredEnergy, false);
             consumer.sync();
+
+            awardEnergyTransfer(level, consumer, transferredEnergy);
         }
 
         for (CableFlow flow : path.cables()) {
@@ -179,6 +185,26 @@ public class EnergyTransferEngine {
                 cable.sync();
             }
         }
+    }
+
+    private void awardEnergyTransfer(ServerLevel level, IEnergyConsumer consumer, long amount) {
+        if (!(consumer instanceof AbstractConsumerEntity entity)) {
+            return;
+        }
+
+        UUID owner = entity.getOwner();
+
+        if (owner == null) {
+            return;
+        }
+
+        ServerPlayer player = level.getServer().getPlayerList().getPlayer(owner);
+
+        if (player == null) {
+            return;
+        }
+
+        player.awardStat(ModStats.ENERGY_TRANSFERRED.get(), (int) amount);
     }
 
     private void onOverVoltage(IEnergyConsumer consumer, double voltage) {

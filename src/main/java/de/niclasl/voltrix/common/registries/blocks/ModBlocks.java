@@ -2,6 +2,7 @@ package de.niclasl.voltrix.common.registries.blocks;
 
 import de.niclasl.voltrix.Voltrix;
 import de.niclasl.voltrix.common.registries.blocks.custom.cable.*;
+import de.niclasl.voltrix.common.registries.blocks.custom.consumer.FactoryLamp;
 import de.niclasl.voltrix.common.registries.blocks.custom.transmission.EnergyMeter;
 import de.niclasl.voltrix.common.registries.blocks.custom.consumer.ElectricFurnace;
 import de.niclasl.voltrix.common.registries.blocks.custom.producer.FuelGenerator;
@@ -170,6 +171,11 @@ public class ModBlocks {
     public static final DeferredBlock<Block> SAFETY_MARKING = registerBlock("safety_marking",
             (properties) -> new Block(
                     properties.strength(40.0f, 100.0f).requiresCorrectToolForDrops()));
+
+    public static final DeferredBlock<Block> FACTORY_LAMP = registerBlock("factory_lamp",
+            (properties) -> new FactoryLamp(
+                    properties.strength(10.0f, 16.0f).requiresCorrectToolForDrops()
+                            .lightLevel(litBlockEmission(15))));
 
     private static ToIntFunction<BlockState> litBlockEmission(int lightValue) {
         return (p_50763_) -> (Boolean)p_50763_.getValue(BlockStateProperties.LIT) ? lightValue : 0;

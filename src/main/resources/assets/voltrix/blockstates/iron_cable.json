@@ -110,6 +110,14 @@
         "model": "voltrix:block/iron_cable_connect",
         "x": 90
       }
+    },
+    {
+      "when": {
+        "covered": true
+      },
+      "apply": {
+        "model": "voltrix:block/cable_covered"
+      }
     }
   ]
 }

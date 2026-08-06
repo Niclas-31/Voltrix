@@ -40,5 +40,9 @@
   "message.voltrix.cable.no_insulated": "The cable is no longer insulated.",
 
   "death.attack.electricity": "%1$s was killed by electric shock",
-  "death.attack.electricity.player": "%1$s was electrocuted by %2$s"
+  "death.attack.electricity.player": "%1$s was electrocuted by %2$s",
+
+  "stat.voltrix.energy_transferred": "Energy Transferred",
+  "stat.voltrix.energy_produced": "Energy Produced",
+  "stat.voltrix.energy_consumed": "Energy Consumed"
 }

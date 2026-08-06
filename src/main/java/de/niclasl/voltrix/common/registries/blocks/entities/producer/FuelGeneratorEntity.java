@@ -4,6 +4,7 @@ import de.niclasl.voltrix.common.registries.blocks.custom.producer.FuelGenerator
 import de.niclasl.voltrix.common.registries.blocks.entities.ModBlockEntities;
 import de.niclasl.voltrix.common.registries.blocks.entities.base.AbstractProducerEntity;
 import de.niclasl.voltrix.common.registries.menus.FuelGeneratorMenu;
+import de.niclasl.voltrix.common.registries.stats.ModStats;
 import de.niclasl.voltrix_api.energy.AmperageTier;
 import de.niclasl.voltrix_api.energy.ConnectionMode;
 import de.niclasl.voltrix_api.energy.ElectricalProperties;
@@ -12,6 +13,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
@@ -135,6 +138,14 @@ public class FuelGeneratorEntity extends AbstractProducerEntity implements Conta
 
             if (storage.getEnergyStored() < storage.getCapacity()) {
                 storage.receiveEnergy(produceEnergy(), false);
+
+                ServerPlayer player = ((ServerLevel) level).getServer()
+                        .getPlayerList()
+                        .getPlayer(getOwner());
+
+                if (player != null) {
+                    player.awardStat(ModStats.ENERGY_PRODUCED.get(), (int) produceEnergy());
+                }
             }
         } else {
             if (storage.getEnergyStored() < storage.getCapacity()) {

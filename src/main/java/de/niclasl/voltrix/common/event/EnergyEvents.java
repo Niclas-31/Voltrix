@@ -6,7 +6,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 @EventBusSubscriber(modid = Voltrix.MOD_ID)
@@ -20,15 +19,5 @@ public class EnergyEvents {
         for (ServerLevel level : server.getAllLevels()) {
             EnergyNetworkManager.tick(level);
         }
-    }
-
-    @SubscribeEvent
-    public static void onLevelLoad(LevelEvent.Load event) {
-
-        if (!(event.getLevel() instanceof ServerLevel level)) {
-            return;
-        }
-
-        EnergyNetworkManager.createNetwork(level);
     }
 }

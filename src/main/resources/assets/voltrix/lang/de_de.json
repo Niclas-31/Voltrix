@@ -40,5 +40,9 @@
   "message.voltrix.cable.no_insulated": "Kabel ist nicht mehr Isoliert.",
 
   "death.attack.electricity": "%1$s wurde durch Strom getötet",
-  "death.attack.electricity.player": "%1$s wurde von %2$s elektrisch getötet"
+  "death.attack.electricity.player": "%1$s wurde von %2$s elektrisch getötet",
+
+  "stat.voltrix.energy_transferred": "Übertragene Energie",
+  "stat.voltrix.energy_produced": "Erzeugte Energie",
+  "stat.voltrix.energy_consumed": "Verbrauchte Energie"
 }

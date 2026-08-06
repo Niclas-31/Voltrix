@@ -1,9 +1,11 @@
 package de.niclasl.voltrix.common.registries.blocks.entities.base;
 
+import de.niclasl.voltrix.common.registries.stats.ModStats;
 import de.niclasl.voltrix_api.energy.ElectricalProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.inventory.StackedContentsCompatible;
@@ -126,6 +128,12 @@ public abstract class AbstractMachineEntity extends AbstractConsumerEntity imple
 
         machine.consumeEnergy(energy, energyPerTick);
 
+        ServerPlayer player = level.getServer().getPlayerList().getPlayer(machine.getOwner());
+
+        if (player != null) {
+            player.awardStat(ModStats.ENERGY_CONSUMED.get(), (int) energyPerTick);
+        }
+
         if (machine.progress >= machine.maxProgress) {
             machine.progress = 0;
             machine.finishRecipe(level, recipe);
@@ -138,8 +146,6 @@ public abstract class AbstractMachineEntity extends AbstractConsumerEntity imple
     protected abstract boolean canProcess(ServerLevel level, RecipeHolder<? extends AbstractCookingRecipe> recipe);
 
     protected abstract void finishRecipe(ServerLevel level, RecipeHolder<? extends AbstractCookingRecipe> recipe);
-
-    protected abstract long getEnergyPerTick();
 
     protected abstract @Nullable RecipeHolder<? extends AbstractCookingRecipe> getRecipe(ServerLevel level);
 }

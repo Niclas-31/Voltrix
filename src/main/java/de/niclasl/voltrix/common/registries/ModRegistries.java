@@ -6,6 +6,7 @@ import de.niclasl.voltrix.common.registries.components.ModDataComponents;
 import de.niclasl.voltrix.common.registries.items.ModCreativeModeTab;
 import de.niclasl.voltrix.common.registries.items.ModItems;
 import de.niclasl.voltrix.common.registries.menus.ModMenuTypes;
+import de.niclasl.voltrix.common.registries.stats.ModStats;
 import de.niclasl.voltrix.common.util.variables.ModVariables;
 import net.neoforged.bus.api.IEventBus;
 
@@ -18,6 +19,7 @@ public class ModRegistries {
         ModBlocks.register(eventBus);
 
         ModDataComponents.register(eventBus);
+        ModStats.register(eventBus);
 
         ModBlockEntities.register(eventBus);
 
